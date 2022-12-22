@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+  selenium:
+    image: selenium/standalone-chrome
+    ports:
+    - 4444:4444
+    restart: always
+
+  app:
+    build: 
+      context: .
+    volumes:
+    - ./app:/app
+    command: sh -c "python3 app.py"
+    ports:
+    - 4000:4000
+    depends_on:
+    - selenium
