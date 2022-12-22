@@ -10,9 +10,9 @@ services:
   app:
     build: 
       context: .
+    command: sh -c "python3 app.py"
     volumes:
     - ./app:/app
-    command: sh -c "python3 app.py"
     ports:
     - 4000:4000
     depends_on:
