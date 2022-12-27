@@ -1,9 +1,9 @@
 
 /config-to-update
-/*.png
+*.png
 
 # testing
 app/bot.py
 
 # production
-/__pycache__
+app/__pycache__

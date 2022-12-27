@@ -10,32 +10,31 @@ def ping():
 def status():
     return 'Alive'
 
-
 @app.route('/freelancer/<string:keyword>')
 def respose(keyword):
 
     browser = RedirectPage(keyword)
-    oferts = TakeInfo (browser)
+    oferts = TakeInfo(browser)
     data = ReturnData(keyword,oferts)
+    Logout(browser)
     return jsonify({'message':data})
 
 
 @app.route('/freelancer', methods =["POST"])
 def request_freelancer():
-    print(request.json)
     user = request.json["user"]
     searchWord = request.json["key"]
     password = request.json["pass"]
     quantity=None
-    print(quantity)
     if "quantity" in request.json:
         quantity=int(request.json['quantity'])
+
     data = Take_Detail_data(user, password, searchWord,quantity)
+    quantity_return = len(data)
     return jsonify({'user':user,
         'keyword':searchWord,
-        'quantity':len(data),
+        'quantity':quantity_return,
         'data':data})
-    return quantity
     
 if __name__ == "__main__":
     app.run(host="0.0.0.0",debug=True, port=4000)
