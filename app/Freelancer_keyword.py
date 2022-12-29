@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import time
+from logger import mylogger
 
 def RedirectPage(searchWord):
     url = "https://www.freelance.de/"
@@ -49,9 +50,9 @@ def TakeInfo (browser,quantity=None):
         "details" : details_array,
         "link" : link
         }     
-        print("-- links - {} ...".format(obj["link"]))
+        mylogger.debug("-- links - {} ...".format(obj["link"]))
         propositions.append(obj)
-    print("taken -{}- links ...".format(len(propositions)))
+    mylogger.debug("taken -{}- links ...".format(len(propositions)))
     return propositions
 
 def ReturnData(searchWord,oferts,quantity=None):
@@ -82,21 +83,15 @@ def LogIn(user,password):
     submit_btn_el = browser.find_element(By.XPATH, "//input[@name='login'][@type='submit']")
     submit_btn_el.click()
     time.sleep(2)
-    print("LogIn succesfulli with credentials...")
+    mylogger.debug("LogIn succesfully with credentials...")
 
     return browser
 
 def Insert_search(log_browser,searchWord):
-    project_url =  'https://www.freelance.de/Projekte'
+    project_url = f"https://www.freelance.de/search/project.php?__search_sort_by=2&__search_freetext={searchWord}&__search_sort_by_remote=2"
     log_browser.get(project_url)
     time.sleep(2)
-    search_field_el = log_browser.find_element(By.ID, "__search_freetext")
-    search_field_el.send_keys(searchWord)
-    
-    submit_btn_el = log_browser.find_element(By.XPATH, "//button[@name='search_simple'][@type='submit']")
-    submit_btn_el.click()   
-    time.sleep(2)
-    print("Looking for projects with -{}- as key ...".format(searchWord))
+    mylogger.debug("Looking for projects with -{}- as key ...".format(searchWord))
 
 def Take_header(log_browser,url):
     log_browser.get(url)
@@ -164,7 +159,8 @@ def Logout(log_browser):
     url = "https://www.freelance.de/logout.php"
     log_browser.get(url)
     time.sleep(1)
-    print("logout and close Browser...")
+    mylogger.debug("logout and close Browser...")
+
     log_browser.quit()
 
 def Take_Detail_data(user, password, searchWord,quantity=None):
@@ -179,10 +175,10 @@ def Take_Detail_data(user, password, searchWord,quantity=None):
         try:
             contact = Take_contact(log_browser)
         except Exception as err:
-            print(f"Unexpected ERROR Taking contact {err}")
+            mylogger.warning(f"Unexpected ERROR Taking contact {err}")
             contact=None
         # log_browser.save_screenshot('screenshot-{}.png'.format(count))
-        print("save data from -{}- link ...".format(count))
+        mylogger.debug("save data from -{}- link ...".format(count))
 
         count=count+1
         obj ={'url':i["link"]}
