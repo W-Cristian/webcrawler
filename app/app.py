@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
-from Freelancer_keyword import *
+import freelancer_base
+import hays_Base
 app = Flask(__name__)
 
 @app.route('/ping')
@@ -13,10 +14,10 @@ def status():
 @app.route('/freelancer/<string:keyword>')
 def respose(keyword):
 
-    browser = RedirectPage(keyword)
-    oferts = TakeInfo(browser)
-    data = ReturnData(keyword,oferts)
-    Logout(browser)
+    browser = freelancer_base.RedirectPage(keyword)
+    oferts = freelancer_base.TakeInfo(browser)
+    data = freelancer_base.ReturnData(keyword,oferts)
+    freelancer_base.Logout(browser)
     return jsonify({'message':data})
 
 
@@ -29,12 +30,24 @@ def request_freelancer():
     if "quantity" in request.json:
         quantity=int(request.json['quantity'])
 
-    data = Take_Detail_data(user, password, searchWord,quantity)
+    data = freelancer_base.Take_Detail_data(user, password, searchWord,quantity)
     quantity_return = len(data)
     return jsonify({'user':user,
         'keyword':searchWord,
         'quantity':quantity_return,
         'data':data})
     
+@app.route('/hays/<string:keyword>')
+def request_hays(keyword):
+    browser = hays_Base.RedirectPage(keyword)
+    oferts = hays_Base.Make_list(browser)
+    data = hays_Base.TakeInfo(browser,oferts)
+    quantity_return = len(data)
+    browser.quit()
+
+    return jsonify({'keyword' : keyword,
+        'quantity' : quantity_return,
+        'data':data})
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0",debug=True, port=4000)

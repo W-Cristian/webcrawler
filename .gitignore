@@ -1,6 +1,7 @@
 
 /config-to-update
 *.png
+*.BAT
 
 # testing
 app/bot.py
