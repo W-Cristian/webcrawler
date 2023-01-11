@@ -64,27 +64,24 @@ def TakeInfo (browser,data,quantity=None):
         try:
             browser.get(data[x]["link"])
             time.sleep(2)
-            # if "status 400" in browser.title.lower():
-            #     mylogger.debug("Not Posible To Load -{}- link {}".format(count,data[x]["link"]))
-            #     count=count+1
-            #     continue
+
             tasks =  browser.find_element(By.CLASS_NAME, "hays__job__detail__your-task")
             details = tasks.find_elements(By.CSS_SELECTOR, "li")
-            task_array = []
+            task_array = ""
             for i in details:
-                task_array.append(i.text)
+                task_array = task_array + i.text + "| "
 
             competences =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-qualifications")
             details = competences.find_elements(By.CSS_SELECTOR, "li")
-            competences_array = []
+            competences_array = ""
             for i in details:
-                competences_array.append(i.text)
+                competences_array =competences_array + i.text + "| "
 
             advantages =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-advantages")
             details = advantages.find_elements(By.CSS_SELECTOR, "li")
-            advantages_array = []
+            advantages_array = ""
             for i in details:
-                advantages_array.append(i.text)
+                advantages_array = advantages_array + i.text + "| "
 
             contact_holder =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-contact-at-hays")
             details = contact_holder.find_elements(By.CSS_SELECTOR, "a")
@@ -104,9 +101,9 @@ def TakeInfo (browser,data,quantity=None):
                 contact["name"] = name_el.text.replace("Mein Ansprechpartner\n","")        
                     
             description = {}
-            description["tasks"] = task_array
-            description["advantages"] = advantages_array
-            description["competences"] = competences_array
+            description["tasks"] = task_array[:-1]
+            description["advantages"] = advantages_array[:-1]
+            description["competences"] = competences_array[:-1]
 
             obj = {
             "header" : data[x]["header"],

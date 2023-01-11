@@ -1,11 +1,12 @@
 from flask import Flask, jsonify, request
 import freelancer_base
 import hays_Base
+import michaelpage_Base
 app = Flask(__name__)
 
-@app.route('/ping')
-def ping():
-    return jsonify({'message':'pong'})
+# @app.route('/ping')
+# def ping():
+#     return jsonify({'message':'pong'})
     
 @app.route('/')
 def status():
@@ -22,7 +23,7 @@ def respose(keyword):
 
 
 @app.route('/freelancer', methods =["POST"])
-def request_freelancer():
+def crawl_freelancer():
     user = request.json["user"]
     searchWord = request.json["key"]
     password = request.json["pass"]
@@ -38,10 +39,22 @@ def request_freelancer():
         'data':data})
     
 @app.route('/hays/<string:keyword>')
-def request_hays(keyword):
+def rcrawl_hays(keyword):
     browser = hays_Base.RedirectPage(keyword)
     oferts = hays_Base.Make_list(browser)
     data = hays_Base.TakeInfo(browser,oferts)
+    quantity_return = len(data)
+    browser.quit()
+
+    return jsonify({'keyword' : keyword,
+        'quantity' : quantity_return,
+        'data':data})
+
+@app.route('/michaelpage/<string:keyword>')
+def crawl_michaelpage(keyword):
+    browser = michaelpage_Base.RedirectPage(keyword)
+    oferts = michaelpage_Base.Make_list(browser)
+    data = michaelpage_Base.TakeInfo(browser,oferts)
     quantity_return = len(data)
     browser.quit()
 
