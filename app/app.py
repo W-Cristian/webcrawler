@@ -1,8 +1,29 @@
 from flask import Flask, jsonify, request
-import freelancer_base
+from flask_swagger_ui import get_swaggerui_blueprint
+import freelance_base
 import hays_Base
 import michaelpage_Base
 app = Flask(__name__)
+
+
+SWAGGER_URL = '/api/docs'  # URL for exposing Swagger UI (without trailing '/')
+API_URL = '/static/swagger.json'  # Our API url (can of course be a local resource)
+
+# Call factory function to create our blueprint
+swaggerui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,  # Swagger UI static files will be mapped to '{SWAGGER_URL}/dist/'
+    API_URL,
+    config={  # Swagger UI config overrides
+        'app_name': "Test application"
+    },
+)
+
+
+@app.route('/static/<path:path>')
+def send_static(path):
+    return send_from_directory('static',path)
+
+app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
 # @app.route('/ping')
 # def ping():
@@ -12,17 +33,17 @@ app = Flask(__name__)
 def status():
     return 'Alive'
 
-@app.route('/freelancer/<string:keyword>')
+@app.route('/freelance/<string:keyword>')
 def respose(keyword):
 
-    browser = freelancer_base.RedirectPage(keyword)
-    oferts = freelancer_base.TakeInfo(browser)
-    data = freelancer_base.ReturnData(keyword,oferts)
-    freelancer_base.Logout(browser)
+    browser = freelance_base.RedirectPage(keyword)
+    oferts = freelance_base.TakeInfo(browser)
+    data = freelance_base.ReturnData(keyword,oferts)
+    freelance_base.Logout(browser)
     return jsonify({'message':data})
 
 
-@app.route('/freelancer', methods =["POST"])
+@app.route('/freelance', methods =["POST"])
 def crawl_freelancer():
     user = request.json["user"]
     searchWord = request.json["key"]
@@ -31,7 +52,7 @@ def crawl_freelancer():
     if "quantity" in request.json:
         quantity=int(request.json['quantity'])
 
-    data = freelancer_base.Take_Detail_data(user, password, searchWord,quantity)
+    data = freelance_base.Take_Detail_data(user, password, searchWord,quantity)
     quantity_return = len(data)
     return jsonify({'user':user,
         'keyword':searchWord,

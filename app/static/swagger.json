@@ -1,0 +1,434 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "description": "Coduct",
+      "version": "1.0.0",
+      "title": "Coduct Web Crawler"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:4000"
+      }
+    ],
+    "tags": [
+      {
+        "name": "freelance",
+        "description": "This point returns information making requests to the page https://www.freelance.de/"
+      },      
+      {
+        "name": "hays",
+        "description": "This point returns information making requests to the page https://www.hays.de"
+      },      
+      {
+        "name": "michaelpage",
+        "description": "This point returns information making requests to the page https://www.michaelpage.de/"
+      }
+      
+    ],
+    "paths":{
+    "/freelance/{key}":
+     {
+        "get": {
+          "tags": [
+            "freelance"
+          ],
+          "summary": "Given a KEY, the page is consulted to return the results obtained from project offers",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "key",
+              "required": true,
+              "description": "Word to search for in the repositories ",
+              "schema": {
+                "$ref": "#/components/schemas/key"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/components/schemas/freekanceRespose"
+              }
+            },
+            "400": {
+              "description": "Failed. Misunderstood Request."
+            },
+            "500": {
+                "description": "internal server error. page structure may change so api need and update"
+              }
+          }
+        }
+    },
+      
+    "/freelance": {
+        "post": {
+            "tags": [
+              "freelance"
+            ],
+            "summary": "Given a word and the credentials of a valid user, a list of the projects found is returned including contact information (if available).",
+            "requestBody": {
+              "description": "give credentials",
+              "required": true,
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/freekanceRequest"
+                  }
+                }
+              }
+            },
+            "produces": [
+              "application/json"
+            ],
+            "responses": {
+              "201": {
+                "description": "OK",
+                "schema": {
+                  "$ref": "#/components/schemas/freekanceRespose"
+                }
+              },
+              "400": {
+                "description": "Failed. Bad post data."
+              },
+              "500": {
+                "description": "internal server error. page structure may change so api need and update"
+              }
+            }
+          }
+      },
+
+      "/hays/{key}":{
+         "get": {
+           "tags": [
+             "hays"
+           ],
+           "summary": "Given a KEY, the page is consulted to return the results obtained from project offers",
+           "parameters": [
+             {
+               "in": "path",
+               "name": "key",
+               "required": true,
+               "description": "Word to search for in the repositories ",
+               "schema": {
+                 "$ref": "#/components/schemas/key"
+               }
+             }
+           ],
+           "responses": {
+             "200": {
+               "description": "OK",
+               "schema": {
+                 "$ref": "#/components/schemas/haysRespose"
+               }
+             },
+             "400": {
+               "description": "Failed. Misunderstood Request."
+             },
+             "500": {
+                "description": "internal server error. page structure may change so api need and update"
+              }
+           }
+         }
+     },
+
+
+    "/michaelpage/{key}":{
+        "get": {
+          "tags": [
+            "michaelpage"
+          ],
+          "summary": "Given a KEY, the page is consulted to return the results obtained from project offers",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "key",
+              "required": true,
+              "description": "Word to search for in the repositories ",
+              "schema": {
+                "$ref": "#/components/schemas/key"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/components/schemas/michaelpageRespose"
+              }
+            },
+            "400": {
+              "description": "Failed. Misunderstood Request."
+            },
+            "500": {
+               "description": "internal server error. page structure may change so api need and update"
+                }
+            }
+          }
+        }
+    },
+
+
+    "components": {
+      "schemas": {
+        "key": {
+          "properties": {
+            "key": {
+              "type": "string"
+            }
+          }
+        },
+        "freekanceRespose": {
+          "type": "object",
+          "properties": {
+            "keyword": {
+              "type": "string"
+            },
+            "quantity": {
+              "type": "integer"
+            },
+            "user": {
+              "type": "string",
+              "format": "email"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "contact": {
+                    "type": "object",
+                    "properties": {
+                      "adresse": {
+                        "type": "string"
+                      },
+                      "company": {
+                        "type": "string"
+                      },
+                      "mail": {
+                        "type": "string"
+                      },
+                      "reach_through": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "header": {
+                    "type": "object",
+                    "properties": {
+                      "Geplanter Start": {
+                        "type": "string"
+                      },
+                      "Letztes Update": {
+                        "type": "string"
+                      },
+                      "Projektort": {
+                        "type": "string"
+                      },
+                      "Referenz-Nummer": {
+                        "type": "string"
+                      },
+                      "Stundensatz": {
+                        "type": "string"
+                      },
+                      "Voraussichtliches Ende": {
+                        "type": "string"
+                      },
+                      "company_name": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "freekanceRequest": {
+          "type": "object",
+          "properties": {
+            "user": {
+              "type": "string",
+              "format": "email"
+            },
+            "pass": {
+              "type": "string",
+              "format": "password"
+            },
+            "quantity": {
+              "type": "integer",
+              "required": false,
+              "minimum": 1,
+              "maximum": 20,
+              "format": "number"
+            },
+            "key": {
+              "type": "string"
+            }
+          }
+        },
+
+        "haysRespose": {
+          "type": "object",
+          "properties": {
+            "keyword": {
+              "type": "string"
+            },
+            "quantity": {
+              "type": "integer"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "contact": {
+                    "type": "object",
+                    "properties": {
+                      "mail": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "telefon": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "description": {
+                    "type": "object",
+                    "properties": {
+                      "advantages": {
+                        "type": "string"
+                      },
+                      "competences": {
+                        "type": "string"
+                      },
+                      "tasks": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "details": {
+                    "type": "object",
+                    "properties": {
+                      "place": {
+                        "type": "string"
+                      },
+                      "startdatum": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "header": {
+                    "type": "string"
+                  },
+                  "link": {
+                    "type": "string"
+                  },
+                  "prospectnumber": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+
+        "michaelpageRespose": {
+          "type": "object",
+          "properties": {
+            "keyword": {
+              "type": "string"
+            },
+            "quantity": {
+              "type": "integer"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "competences": {
+                    "type": "string"
+                  },
+                  "contact": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "reference_number": {
+                        "type": "string"
+                      },
+                      "telephone": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "details": {
+                    "type": "object",
+                    "properties": {
+                      "Art des Jobs": {
+                        "type": "string"
+                      },
+                      "Beraterkontakt": {
+                        "type": "string"
+                      },
+                      "Beratername": {
+                        "type": "string"
+                      },
+                      "Berufsfeld": {
+                        "type": "string"
+                      },
+                      "Näheres Berufsfeld": {
+                        "type": "string"
+                      },
+                      "Ort": {
+                        "type": "string"
+                      },
+                      "Referenznummer": {
+                        "type": "string"
+                      },
+                      "Sektor": {
+                        "type": "string"
+                      },
+                      "Vertragsart": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "header": {
+                    "type": "string"
+                  },
+                  "link": {
+                    "type": "string"
+                  },
+                  "prospectnumber": {
+                    "type": "string"
+                  },
+                  "tasks": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+}

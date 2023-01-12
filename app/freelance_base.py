@@ -122,7 +122,6 @@ def Take_contact(log_browser):
     mail = ""
     company = ""
     for i in kontac_btns:
-        # print(i.text)
         if i.text == 'Kontaktdaten anzeigen':
             kontac_btn = i
             panel = kontac_btn.find_element(By.XPATH,".//ancestor::div[@class='panel-body']")
@@ -132,10 +131,8 @@ def Take_contact(log_browser):
             links = panel.find_elements(By.CSS_SELECTOR,"a")
             company = links[0].get_attribute('text')
             for i in links:
-                # print("links: {}".format(i.get_attribute('href')))
                 if "mailto:" in i.get_attribute('href'):
                     mail = i.get_attribute('href').replace('mailto:', "")
-                    # print("mail: {}".format(mail))
     
     infopanel = log_browser.find_element(By.XPATH,"//div[@id='contact_data']")
     sectors = infopanel.find_elements(By.CSS_SELECTOR,"div")
@@ -177,7 +174,6 @@ def Take_Detail_data(user, password, searchWord,quantity=None):
         except Exception as err:
             mylogger.warning(f"Unexpected ERROR Taking contact {err}")
             contact=None
-        # log_browser.save_screenshot('screenshot-{}.png'.format(count))
         mylogger.debug("save data from -{}- link ...".format(count))
 
         count=count+1

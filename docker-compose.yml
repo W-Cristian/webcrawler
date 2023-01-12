@@ -11,6 +11,7 @@ services:
     build: 
       context: .
     command: sh -c "python3 app.py"
+    domainname: "coductCrawler"
     volumes:
     - ./app:/app
     ports:
