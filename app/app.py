@@ -3,6 +3,8 @@ from flask_swagger_ui import get_swaggerui_blueprint
 import freelance_base
 import hays_Base
 import michaelpage_Base
+import solcom_base
+
 app = Flask(__name__)
 
 
@@ -35,10 +37,11 @@ def status():
 
 @app.route('/freelance/<string:keyword>')
 def respose(keyword):
-
+    args = request.args
+    quantity = args.get("MaxQuantity", type=int)
     browser = freelance_base.RedirectPage(keyword)
     oferts = freelance_base.TakeInfo(browser)
-    data = freelance_base.ReturnData(keyword,oferts)
+    data = freelance_base.ReturnData(keyword,oferts,quantity)
     freelance_base.Logout(browser)
     return jsonify({'message':data})
 
@@ -61,9 +64,11 @@ def crawl_freelancer():
     
 @app.route('/hays/<string:keyword>')
 def rcrawl_hays(keyword):
+    args = request.args
+    quantity = args.get("MaxQuantity", type=int)
     browser = hays_Base.RedirectPage(keyword)
     oferts = hays_Base.Make_list(browser)
-    data = hays_Base.TakeInfo(browser,oferts)
+    data = hays_Base.TakeInfo(browser,oferts,quantity)
     quantity_return = len(data)
     browser.quit()
 
@@ -73,9 +78,25 @@ def rcrawl_hays(keyword):
 
 @app.route('/michaelpage/<string:keyword>')
 def crawl_michaelpage(keyword):
+    args = request.args
+    quantity = args.get("MaxQuantity", type=int)
     browser = michaelpage_Base.RedirectPage(keyword)
     oferts = michaelpage_Base.Make_list(browser)
-    data = michaelpage_Base.TakeInfo(browser,oferts)
+    data = michaelpage_Base.TakeInfo(browser,oferts,quantity)
+    quantity_return = len(data)
+    browser.quit()
+
+    return jsonify({'keyword' : keyword,
+        'quantity' : quantity_return,
+        'data':data})
+
+@app.route('/solcom/<string:keyword>')
+def crawl_solcom(keyword):
+    args = request.args
+    quantity = args.get("MaxQuantity", type=int)
+    browser = solcom_base.RedirectPage(keyword)
+    oferts = solcom_base.Make_list(browser)
+    data = solcom_base.TakeInfo(browser,oferts,quantity)
     quantity_return = len(data)
     browser.quit()
 
