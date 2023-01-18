@@ -28,7 +28,11 @@
     },      
     {
       "name": "solcom",
-      "description": "This point returns information making requests to the page https://www.https://www.solcom.de"
+      "description": "This point returns information making requests to the page https://www.solcom.de"
+    },
+    {
+      "name": "gulp",
+      "description": "This point returns information making requests to the page https://www.gulp.de"
     }
     
   ],
@@ -214,7 +218,48 @@
                   }
               }
             }
-          }
+          },
+      "/gulp/{key}":{
+            "get": {
+              "tags": [
+                "gulp"
+              ],
+              "parameters": 
+              [
+                {
+                "name": "exclusive_gulp",
+                "in": "query",
+                "description": "determines if the results returned will include offers from outside gulp",
+                "required": false,
+                "schema": {
+                  "type": "boolean "
+                }
+                },
+                {
+                  "$ref": "#/components/parameters/key"
+                }
+              ],
+              "summary": "Given a KEY, the page is consulted to return the results obtained from project offers",
+              "responses": {
+                "200": {
+                  "description": "successful operation",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                          "$ref": "#/components/schemas/gulpRespose"
+                        }
+                      }
+                    }
+                },
+                "400": {
+                  "description": "Failed. Misunderstood Request."
+                },
+                "500": {
+                  "description": "internal server error. page structure may change so api need and update"
+                    }
+                }
+              }
+            }
     },
 
   "components": {
@@ -538,6 +583,120 @@
             }
           }
         }
+      },
+      "gulpRespose":{
+        "type": "object",
+          "properties": {
+            "keyword": {
+              "type": "string"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "gulp": {
+                  "type": "array",
+                  "items": 
+                    {
+                      "type": "object",
+                      "properties": {
+                        "competences": {
+                          "type": "string"
+                        },
+                        "contact": {
+                          "type": "object",
+                          "properties": {
+                            "adresse": {
+                              "type": "string"
+                            },
+                            "firma": {
+                              "type": "string"
+                            },
+                            "mail": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "telephon": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "object",
+                          "properties": {
+                            "Beginn": {
+                              "type": "string"
+                            },
+                            "Dauer": {
+                              "type": "string"
+                            },
+                            "Einsatzort": {
+                              "type": "string"
+                            },
+                            "Referenznummer": {
+                              "type": "string"
+                            },
+                            "Veröffentlicht": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "header": {
+                          "type": "string"
+                        },
+                        "link": {
+                          "type": "string"
+                        },
+                        "prospectnumber": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                },
+                "solcom": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "description": {
+                        "type": "string"
+                      },
+                      "header": {
+                        "type": "string"
+                      },
+                      "link": {
+                        "type": "string"
+                      },
+                      "prospectnumber": {
+                        "type": "string"
+                      },                  
+                      "details": {
+                        "type": "object",
+                        "properties": {
+                          "Dauer": {
+                            "type": "string"
+                          },
+                          "Starttermin": {
+                            "type": "string"
+                          },
+                          "Einsatzort": {
+                            "type": "string"
+                          },
+                          "Stellentyp": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
       }
     }
   }

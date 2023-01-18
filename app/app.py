@@ -4,6 +4,7 @@ import freelance_base
 import hays_Base
 import michaelpage_Base
 import solcom_base
+import gulp_base
 
 app = Flask(__name__)
 
@@ -102,6 +103,23 @@ def crawl_solcom(keyword):
 
     return jsonify({'keyword' : keyword,
         'quantity' : quantity_return,
+        'data':data})
+
+@app.route('/gulp/<string:keyword>')
+def crawl_gulp(keyword):
+    args = request.args
+    exclusive_gulp = args.get("exclusive_gulp", type=bool)
+    browser = gulp_base.RedirectPage(keyword)
+    oferts = gulp_base.Make_list(browser)
+    data = gulp_base.TakeInfo(browser,oferts)
+    if not exclusive_gulp:
+        propositions_solcom = gulp_base.TakeInfo_solcom(browser,data["solcom"])
+        data["solcom"] = propositions_solcom
+    else:
+        data["solcom"] = None
+    browser.quit()
+    
+    return jsonify({'keyword' : keyword,
         'data':data})
 
 if __name__ == "__main__":
