@@ -7,4 +7,4 @@ mylogger = logging.getLogger("myLogger")
 
 handlerConsola = logging.StreamHandler()
 mylogger.addHandler(handlerConsola)
-mylogger.setLevel(logging.DEBUG)
+# mylogger.setLevel(logging.DEBUG)

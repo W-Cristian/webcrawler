@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, make_response
 from flask_swagger_ui import get_swaggerui_blueprint
 from  utilities.utilities import Verify_credentials
 from  utilities.logger import mylogger
@@ -55,9 +55,11 @@ def respose(keyword):
             mylogger.debug(f"Closing Browser")
 
     else:
-        return jsonify({'keyword' : keyword,
-            'ACCESS_TOKEN' : access_token,
-            'status':'ERROR invalid ACCESS_TOKEN'})
+        invalid_ACCESS_TOKEN = jsonify({'keyword' : keyword,
+                'ACCESS_TOKEN' : access_token,
+                'status':'ERROR invalid ACCESS_TOKEN'})
+        resp = make_response(invalid_ACCESS_TOKEN, 210)
+        return resp
 
 
 @app.route('/freelance', methods =["POST"])
@@ -85,9 +87,11 @@ def crawl_freelancer():
             mylogger.debug(f"Closing Browser")
 
     else:
-        return jsonify({'keyword' : searchWord,
-            'ACCESS_TOKEN' : access_token,
-            'status':'ERROR invalid ACCESS_TOKEN'})
+        invalid_ACCESS_TOKEN = jsonify({'keyword' : keyword,
+                'ACCESS_TOKEN' : access_token,
+                'status':'ERROR invalid ACCESS_TOKEN'})
+        resp = make_response(invalid_ACCESS_TOKEN, 210)
+        return resp
     
 @app.route('/hays/<string:keyword>')
 def rcrawl_hays(keyword):
@@ -111,9 +115,11 @@ def rcrawl_hays(keyword):
             mylogger.debug(f"Closing Browser")
 
     else:
-        return jsonify({'keyword' : keyword,
-            'ACCESS_TOKEN' : access_token,
-            'status':'ERROR invalid ACCESS_TOKEN'})
+        invalid_ACCESS_TOKEN = jsonify({'keyword' : keyword,
+                'ACCESS_TOKEN' : access_token,
+                'status':'ERROR invalid ACCESS_TOKEN'})
+        resp = make_response(invalid_ACCESS_TOKEN, 210)
+        return resp
 
 @app.route('/michaelpage/<string:keyword>')
 def crawl_michaelpage(keyword):
@@ -137,9 +143,11 @@ def crawl_michaelpage(keyword):
             mylogger.debug(f"Closing Browser")
 
     else:
-        return jsonify({'keyword' : keyword,
-            'ACCESS_TOKEN' : access_token,
-            'status':'ERROR invalid ACCESS_TOKEN'})
+        invalid_ACCESS_TOKEN = jsonify({'keyword' : keyword,
+                'ACCESS_TOKEN' : access_token,
+                'status':'ERROR invalid ACCESS_TOKEN'})
+        resp = make_response(invalid_ACCESS_TOKEN, 210)
+        return resp
 
 @app.route('/solcom/<string:keyword>')
 def crawl_solcom(keyword):
@@ -164,14 +172,11 @@ def crawl_solcom(keyword):
             mylogger.debug(f"Closing Browser")
 
     else:
-        return jsonify({'keyword' : keyword,
-            'ACCESS_TOKEN' : access_token,
-            'status':'ERROR invalid ACCESS_TOKEN'})
-
-
-    return jsonify({'keyword' : keyword,
-        'quantity' : quantity_return,
-        'data':data})
+        invalid_ACCESS_TOKEN = jsonify({'keyword' : keyword,
+                'ACCESS_TOKEN' : access_token,
+                'status':'ERROR invalid ACCESS_TOKEN'})
+        resp = make_response(invalid_ACCESS_TOKEN, 210)
+        return resp
 
 @app.route('/gulp/<string:keyword>')
 def crawl_gulp(keyword):
@@ -199,9 +204,11 @@ def crawl_gulp(keyword):
             mylogger.debug(f"Closing Browser")
 
     else:
-        return jsonify({'keyword' : keyword,
-            'ACCESS_TOKEN' : access_token,
-            'status':'ERROR invalid ACCESS_TOKEN'})
+        invalid_ACCESS_TOKEN = jsonify({'keyword' : keyword,
+                'ACCESS_TOKEN' : access_token,
+                'status':'ERROR invalid ACCESS_TOKEN'})
+        resp = make_response(invalid_ACCESS_TOKEN, 210)
+        return resp
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0",debug=True, port=4000)
