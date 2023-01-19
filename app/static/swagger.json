@@ -37,8 +37,7 @@
     
   ],
   "paths":{
-    "/freelance/{key}":
-    {
+    "/freelance/{key}":{
         "get": {
           "tags": [
             "freelance"
@@ -114,7 +113,7 @@
           }
       },
 
-      "/hays/{key}":{
+    "/hays/{key}":{
         "get": {
           "tags": [
             "hays"
@@ -148,7 +147,6 @@
           }
         }
     },
-
 
     "/michaelpage/{key}":{
         "get": {
@@ -219,7 +217,8 @@
               }
             }
           },
-      "/gulp/{key}":{
+
+    "/gulp/{key}":{
             "get": {
               "tags": [
                 "gulp"

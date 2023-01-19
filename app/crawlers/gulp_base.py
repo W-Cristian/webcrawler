@@ -1,14 +1,13 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-import time
+import sys
+sys.path.append('/app/utilities')
 from logger import mylogger
-import json
+from selenium.webdriver.common.by import By
+import time
+from .general_resources import Generate_browser
 
 def RedirectPage(searchWord):
     url = f"https://www.gulp.de/gulp2/g/projekte?query={searchWord}&order=DATE_DESC"
-    browser = webdriver.Remote(command_executor='http://selenium:4444/wd/hub',
-        desired_capabilities=DesiredCapabilities.FIREFOX)
+    browser = Generate_browser()
     time.sleep(2)
     browser.get(url)
     time.sleep(2)
@@ -47,10 +46,9 @@ def TakeInfo (browser,data,quantity=None):
     propositions = {"gulp" : [],
                    "solcom" : []}
     for x in index:
-        mylogger.debug("taking details from link: {}".format(data[x]["link"]))
-
         try:
             if "agentur" in data[x]["link"]:
+                mylogger.debug("taking details from link: {}".format(data[x]["link"]))
                 browser.get(data[x]["link"])
                 time.sleep(2)
                 container =  browser.find_element(By.CLASS_NAME, "element-box")
@@ -93,6 +91,7 @@ def TakeInfo (browser,data,quantity=None):
                 propositions["gulp"].append(obj)
 
             if data[x]["firma"] != None and "SOLCOM" in data[x]["firma"].upper():
+                mylogger.debug("taking details from link: {}".format(data[x]["link"]))
                 browser.get(data[x]["link"])
                 time.sleep(2)
 
@@ -113,8 +112,7 @@ def TakeInfo_solcom (browser,solcom_data):
     
     propositions_solcom = []
     for x in index:
-        mylogger.debug("taking details from link: {}".format(data[x]["link"]))
-
+        mylogger.debug("taking details from solcom link: {}".format(solcom_data[x]["link"]))
         try:
             browser.get(solcom_data[x]["link"])
             time.sleep(2)

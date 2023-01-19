@@ -1,13 +1,13 @@
 from flask import Flask, jsonify, request
 from flask_swagger_ui import get_swaggerui_blueprint
-import freelance_base
-import hays_Base
-import michaelpage_Base
-import solcom_base
-import gulp_base
+import crawlers.freelance_base as freelance_base
+import crawlers.hays_Base as hays_Base
+import crawlers.michaelpage_Base as michaelpage_Base
+import crawlers.solcom_base as solcom_base
+import crawlers.gulp_base as gulp_base
+# from  utilities.utilities import Verify_credentials
 
 app = Flask(__name__)
-
 
 SWAGGER_URL = '/api/docs'  # URL for exposing Swagger UI (without trailing '/')
 API_URL = '/static/swagger.json'  # Our API url (can of course be a local resource)
@@ -21,20 +21,15 @@ swaggerui_blueprint = get_swaggerui_blueprint(
     },
 )
 
-
 @app.route('/static/<path:path>')
 def send_static(path):
     return send_from_directory('static',path)
 
 app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
-# @app.route('/ping')
-# def ping():
-#     return jsonify({'message':'pong'})
-    
 @app.route('/')
 def status():
-    return 'Alive'
+    return "Alive"
 
 @app.route('/freelance/<string:keyword>')
 def respose(keyword):

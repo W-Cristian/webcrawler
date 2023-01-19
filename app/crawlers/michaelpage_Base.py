@@ -1,14 +1,13 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-import time
+import sys
+sys.path.append('/app/utilities')
 from logger import mylogger
-
+from selenium.webdriver.common.by import By
+import time
+from .general_resources import Generate_browser
 
 def RedirectPage(searchWord):
     url = f"https://www.michaelpage.de/jobs/{searchWord}?sort_by=most_recent"
-    browser = webdriver.Remote(command_executor='http://selenium:4444/wd/hub',
-        desired_capabilities=DesiredCapabilities.FIREFOX)
+    browser = Generate_browser()
     time.sleep(2)
     browser.get(url)
     time.sleep(2)

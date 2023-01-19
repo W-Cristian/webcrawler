@@ -1,13 +1,13 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-import time
+import sys
+sys.path.append('/app/utilities')
 from logger import mylogger
+from selenium.webdriver.common.by import By
+import time
+from .general_resources import Generate_browser
 
 def RedirectPage(searchWord):
     url = "https://www.freelance.de/"
-    browser = webdriver.Remote(command_executor='http://selenium:4444/wd/hub',
-        desired_capabilities=DesiredCapabilities.FIREFOX)
+    browser = Generate_browser()
     time.sleep(5)
     browser.get(url)
     time.sleep(2)
@@ -19,7 +19,6 @@ def RedirectPage(searchWord):
     submit_btn_el = browser.find_element(By.XPATH, "//button[@class='btn btn-primary'][@type='button']")
     submit_btn_el.click()
     time.sleep(2)
-    browser.save_screenshot('screenshot.png')
     return browser
 
 def TakeInfo (browser,quantity=None):
@@ -65,8 +64,7 @@ def ReturnData(searchWord,oferts,quantity=None):
 def LogIn(user,password):
 
     url = "https://www.freelance.de/login.php"
-    browser = webdriver.Remote('http://selenium:4444/wd/hub',
-        desired_capabilities=DesiredCapabilities.FIREFOX)
+    browser = Generate_browser()
     time.sleep(5)
 
     browser.get(url)

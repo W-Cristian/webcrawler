@@ -1,10 +1,9 @@
-
 /config-to-update
 *.png
 *.BAT
-
+.env
 # testing
 app/bot.py
 
 # production
-app/__pycache__
+**/__pycache__
