@@ -54,13 +54,6 @@ def TakeInfo (browser,quantity=None):
     mylogger.debug("taken -{}- links ...".format(len(propositions)))
     return propositions
 
-def ReturnData(searchWord,oferts,quantity=None):
-    file_data = dict({"Key": searchWord,
-    "quantity": len(oferts),
-        "data":[]})
-    file_data["data"] = oferts
-    return file_data
-
 def LogIn(user,password):
 
     url = "https://www.freelance.de/login.php"
@@ -154,9 +147,8 @@ def Logout(log_browser):
     url = "https://www.freelance.de/logout.php"
     log_browser.get(url)
     time.sleep(1)
-    mylogger.debug("logout and close Browser...")
+    mylogger.debug("Logout freelance.de...")
 
-    log_browser.quit()
 
 def Take_Detail_data(user, password, searchWord,quantity=None):
     log_browser = LogIn(user, password)

@@ -49,7 +49,7 @@ def Make_list (browser):
     return propositions
 
 def TakeInfo (browser,data,quantity=None):
-    if quantity is not None:
+    if quantity is not None and len(data)>quantity:
         index = range(0,quantity)
     else:
         index = range(0, len(data))
@@ -61,61 +61,58 @@ def TakeInfo (browser,data,quantity=None):
         count=count+1
         mylogger.debug("taking details from -{}- link: {}".format(count,data[x]["link"]))
 
-        try:
-            browser.get(data[x]["link"])
-            time.sleep(2)
+        browser.get(data[x]["link"])
+        time.sleep(2)
 
-            tasks =  browser.find_element(By.CLASS_NAME, "hays__job__detail__your-task")
-            details = tasks.find_elements(By.CSS_SELECTOR, "li")
-            task_array = ""
-            for i in details:
-                task_array = task_array + i.text + "| "
+        tasks =  browser.find_element(By.CLASS_NAME, "hays__job__detail__your-task")
+        details = tasks.find_elements(By.CSS_SELECTOR, "li")
+        task_array = ""
+        for i in details:
+            task_array = task_array + i.text + "| "
 
-            competences =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-qualifications")
-            details = competences.find_elements(By.CSS_SELECTOR, "li")
-            competences_array = ""
-            for i in details:
-                competences_array =competences_array + i.text + "| "
+        competences =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-qualifications")
+        details = competences.find_elements(By.CSS_SELECTOR, "li")
+        competences_array = ""
+        for i in details:
+            competences_array =competences_array + i.text + "| "
 
-            advantages =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-advantages")
-            details = advantages.find_elements(By.CSS_SELECTOR, "li")
-            advantages_array = ""
-            for i in details:
-                advantages_array = advantages_array + i.text + "| "
+        advantages =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-advantages")
+        details = advantages.find_elements(By.CSS_SELECTOR, "li")
+        advantages_array = ""
+        for i in details:
+            advantages_array = advantages_array + i.text + "| "
 
-            contact_holder =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-contact-at-hays")
-            details = contact_holder.find_elements(By.CSS_SELECTOR, "a")
-            telefon = ""
-            mail = ""
-            for i in details:
-                if "mailto:" in i.get_attribute('href'):
-                    if mail == "":
-                        mail = i.text
-                if "callto:" in i.get_attribute('href'):
-                    telefon = i.get_attribute('href').replace("callto:","")
-            contact = {}
-            contact["mail"] = mail
-            contact["telefon"] = telefon
-            name_el =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-contact-at-hays__item")
-            if "Mein Ansprechpartner" in name_el.text:
-                contact["name"] = name_el.text.replace("Mein Ansprechpartner\n","")        
-                    
-            description = {}
-            description["tasks"] = task_array[:-1]
-            description["advantages"] = advantages_array[:-1]
-            description["competences"] = competences_array[:-1]
+        contact_holder =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-contact-at-hays")
+        details = contact_holder.find_elements(By.CSS_SELECTOR, "a")
+        telefon = ""
+        mail = ""
+        for i in details:
+            if "mailto:" in i.get_attribute('href'):
+                if mail == "":
+                    mail = i.text
+            if "callto:" in i.get_attribute('href'):
+                telefon = i.get_attribute('href').replace("callto:","")
+        contact = {}
+        contact["mail"] = mail
+        contact["telefon"] = telefon
+        name_el =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-contact-at-hays__item")
+        if "Mein Ansprechpartner" in name_el.text:
+            contact["name"] = name_el.text.replace("Mein Ansprechpartner\n","")        
+                
+        description = {}
+        description["tasks"] = task_array[:-1]
+        description["advantages"] = advantages_array[:-1]
+        description["competences"] = competences_array[:-1]
 
-            obj = {
-            "header" : data[x]["header"],
-            "prospectnumber" : data[x]["prospectnumber"].replace("Referenznummer: ",""),
-            "description" : description,
-            "details" : data[x]["details"],
-            "contact" : contact,
-            "link" : data[x]["link"]
-            }     
-            propositions.append(obj)
-        except Exception as err:
-            mylogger.warning(f"Unexpected ERROR Taking Info {err}")
+        obj = {
+        "header" : data[x]["header"],
+        "prospectnumber" : data[x]["prospectnumber"].replace("Referenznummer: ",""),
+        "description" : description,
+        "details" : data[x]["details"],
+        "contact" : contact,
+        "link" : data[x]["link"]
+        }     
+        propositions.append(obj)
 
     return propositions
 

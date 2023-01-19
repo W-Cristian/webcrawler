@@ -49,6 +49,9 @@
             },
             {
               "$ref": "#/components/parameters/key"
+            },
+            {
+              "$ref": "#/components/parameters/ACCESS_TOKEN"
             }
           ],
           "responses": {
@@ -125,6 +128,9 @@
             },
             {
               "$ref": "#/components/parameters/key"
+            },
+            {
+              "$ref": "#/components/parameters/ACCESS_TOKEN"
             }
           ],
           "responses": {
@@ -160,6 +166,9 @@
             },
             {
               "$ref": "#/components/parameters/key"
+            },
+            {
+              "$ref": "#/components/parameters/ACCESS_TOKEN"
             }
           ],
           "responses": {
@@ -194,6 +203,9 @@
               },
               {
                 "$ref": "#/components/parameters/key"
+              },
+              {
+                "$ref": "#/components/parameters/ACCESS_TOKEN"
               }
             ],
             "summary": "Given a KEY, the page is consulted to return the results obtained from project offers",
@@ -236,6 +248,9 @@
                 },
                 {
                   "$ref": "#/components/parameters/key"
+                },
+                {
+                  "$ref": "#/components/parameters/ACCESS_TOKEN"
                 }
               ],
               "summary": "Given a KEY, the page is consulted to return the results obtained from project offers",
@@ -278,7 +293,16 @@
         "name": "key",
         "in": "path",
         "description": "word to search for in the repositories ",
-        "required": false,
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "ACCESS_TOKEN": {
+        "name": "ACCESS_TOKEN",
+        "in": "path",
+        "description": "is needed to run any action in the api",
+        "required": true,
         "schema": {
           "type": "string"
         }
@@ -286,7 +310,7 @@
     },
     "schemas": {
 
-      "freekanceRespose": {
+      "freelanceRespose": {
         "type": "object",
         "properties": {
           "keyword": {
@@ -362,7 +386,7 @@
           }
         }
       },
-      "freekanceRequest": {
+      "freelanceRequest": {
         "type": "object",
         "properties": {
           "user": {
@@ -370,6 +394,10 @@
             "format": "email"
           },
           "pass": {
+            "type": "string",
+            "format": "password"
+          },
+          "ACCESS_TOKEN": {
             "type": "string",
             "format": "password"
           },

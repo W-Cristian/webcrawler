@@ -49,7 +49,7 @@ def Make_list (browser):
     return propositions
 
 def TakeInfo (browser,data,quantity=None):
-    if quantity is not None:
+    if quantity is not None and len(data)>quantity:
         index = range(0,quantity)
     else:
         index = range(0, len(data))
@@ -61,24 +61,23 @@ def TakeInfo (browser,data,quantity=None):
         count=count+1
         mylogger.debug("taking details from -{}- link: {}".format(count,data[x]["link"]))
 
-        try:
-            browser.get(data[x]["link"])
-            time.sleep(2)
-            container =  browser.find_element(By.CLASS_NAME, "projectdetail-container")
-            description_container = container.find_element(By.XPATH, ".//div[@class='neos-nodetypes-text projekt-desc']")
-            lists = description_container.find_elements(By.CSS_SELECTOR, "ul")
+        browser.get(data[x]["link"])
+        time.sleep(2)
+        container =  browser.find_element(By.CLASS_NAME, "projectdetail-container")
+        description_container = container.find_element(By.XPATH, ".//div[@class='neos-nodetypes-text projekt-desc']")
+        lists = description_container.find_elements(By.CSS_SELECTOR, "ul")
 
-            details = container.find_elements(By.XPATH, ".//div[@class='project-infos']//li//span[@class='icon-value']")
-            detailsobj = {
-                "Dauer" : details[0].text,
-                "Starttermin" : details[1].text,
-                "Einsatzort" : details[2].text,
-                "Stellentyp" : details[3].text,
-            }
-            paragraphs = description_container.find_elements(By.CSS_SELECTOR, "p")
-            
-            description = description_container.text
-            description = description.replace(paragraphs[0].text,"").replace(paragraphs[2].text,"").replace("Zusätzliche Informationen:","")
+        details = container.find_elements(By.XPATH, ".//div[@class='project-infos']//li//span[@class='icon-value']")
+        detailsobj = {
+            "Dauer" : details[0].text,
+            "Starttermin" : details[1].text,
+            "Einsatzort" : details[2].text,
+            "Stellentyp" : details[3].text,
+        }
+        paragraphs = description_container.find_elements(By.CSS_SELECTOR, "p")
+        
+        description = description_container.text
+        description = description.replace(paragraphs[0].text,"").replace(paragraphs[2].text,"").replace("Zusätzliche Informationen:","")
     #         paragraph = paragraphs[1].text
 
     #         lists = description_container.find_elements(By.CSS_SELECTOR, "ul")
@@ -92,19 +91,16 @@ def TakeInfo (browser,data,quantity=None):
     #         for i in competences:
     #             competences_array = competences_array + i.text + "|"
             # solcom = Solcom(data[x]["header"],description,data[x]["prospectnumber"],detailsobj,data[x]["link"])
-            obj = {
-            "header" : data[x]["header"],
-            "description" : description,
-            "prospectnumber" : data[x]["prospectnumber"],
-    #         "tasks" : task_array[:-1],
-    #         "competences" : competences_array[:-1],
-            "details" : detailsobj,
-            "link" : data[x]["link"]
-            }     
-            propositions.append(obj)
-
-        except Exception as err:
-            mylogger.warning(f"Unexpected ERROR Taking Info {err}")
+        obj = {
+        "header" : data[x]["header"],
+        "description" : description,
+        "prospectnumber" : data[x]["prospectnumber"],
+#         "tasks" : task_array[:-1],
+#         "competences" : competences_array[:-1],
+        "details" : detailsobj,
+        "link" : data[x]["link"]
+        }     
+        propositions.append(obj)
 
     return propositions
 
