@@ -9,11 +9,11 @@ services:
 
   app:
     build: 
-      context: .
+      context: ${CRAWLER_PATH:-.}
     command: sh -c "python3 app.py"
     domainname: "coductCrawler"
     volumes:
-    - ./app:/app
+    - ${CRAWLER_PATH:-.}/app:/app
     ports:
     - 4000:4000
     depends_on:
