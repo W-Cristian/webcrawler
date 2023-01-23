@@ -3,11 +3,10 @@ sys.path.append('/app/utilities')
 from logger import mylogger
 from selenium.webdriver.common.by import By
 import time
-from .general_resources import Generate_browser
 
-def RedirectPage(searchWord):
+
+def RedirectPage(searchWord,browser):
     url = f"https://www.gulp.de/gulp2/g/projekte?query={searchWord}&order=DATE_DESC"
-    browser = Generate_browser()
     time.sleep(2)
     browser.get(url)
     time.sleep(2)

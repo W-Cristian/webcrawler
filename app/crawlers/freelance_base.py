@@ -3,11 +3,9 @@ sys.path.append('/app/utilities')
 from logger import mylogger
 from selenium.webdriver.common.by import By
 import time
-from .general_resources import Generate_browser
 
-def RedirectPage(searchWord):
+def RedirectPage(searchWord,browser):
     url = "https://www.freelance.de/"
-    browser = Generate_browser()
     time.sleep(5)
     browser.get(url)
     time.sleep(2)
@@ -54,10 +52,9 @@ def TakeInfo (browser,quantity=None):
     mylogger.debug("taken -{}- links ...".format(len(propositions)))
     return propositions
 
-def LogIn(user,password):
+def LogIn(user,password,browser):
 
     url = "https://www.freelance.de/login.php"
-    browser = Generate_browser()
     time.sleep(5)
 
     browser.get(url)
@@ -80,9 +77,9 @@ def LogIn(user,password):
 
 def Insert_search(log_browser,searchWord):
     project_url = f"https://www.freelance.de/search/project.php?__search_sort_by=2&__search_freetext={searchWord}&__search_sort_by_remote=2"
+    mylogger.debug("Looking for projects with -{}- as key ...".format(searchWord))
     log_browser.get(project_url)
     time.sleep(2)
-    mylogger.debug("Looking for projects with -{}- as key ...".format(searchWord))
 
 def Take_header(log_browser,url):
     log_browser.get(url)
@@ -150,8 +147,7 @@ def Logout(log_browser):
     mylogger.debug("Logout freelance.de...")
 
 
-def Take_Detail_data(user, password, searchWord,quantity=None):
-    log_browser = LogIn(user, password)
+def Take_Detail_data(log_browser, searchWord,quantity=None):
     Insert_search(log_browser,searchWord)
     list_url = TakeInfo (log_browser,quantity)
     detaildata = []

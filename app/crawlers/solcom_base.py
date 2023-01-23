@@ -3,14 +3,12 @@ sys.path.append('/app/utilities')
 from logger import mylogger
 from selenium.webdriver.common.by import By
 import time
-from .general_resources import Generate_browser
 
 
 import json
 
-def RedirectPage(searchWord):
+def RedirectPage(searchWord,browser):
     url = "https://www.solcom.de/de/projektportal"
-    browser = Generate_browser()
     time.sleep(2)
     browser.get(url)
     time.sleep(2)
