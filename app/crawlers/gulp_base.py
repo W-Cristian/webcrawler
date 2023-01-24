@@ -24,7 +24,7 @@ def Make_list (browser):
         try:
             firma = divBox[i].find_element(By.XPATH, ".//span[@class='company ng-star-inserted']").text
         except Exception as e:
-            mylogger.debug("NOT FOUND - span[@class='company ng-star-inserted']")
+            mylogger.debug("EXPECTED ERROR: NOT FOUND  - span[@class='company ng-star-inserted']")
             
         obj = {
         "header" : link.get_attribute('text'),

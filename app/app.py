@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request, make_response
 from flask_swagger_ui import get_swaggerui_blueprint
-from  utilities.utilities import Verify_credentials
+from  utilities.utilities import Verify_credentials,Handler_request,RESPOSE_CODE_MESSAGE
 from  utilities.logger import mylogger
 
 import crawlers.freelance_base as freelance_base
@@ -18,10 +18,10 @@ API_URL = '/static/swagger.json'  # Our API url (can of course be a local resour
 
 # Call factory function to create our blueprint
 swaggerui_blueprint = get_swaggerui_blueprint(
-    SWAGGER_URL,  # Swagger UI static files will be mapped to '{SWAGGER_URL}/dist/'
+    SWAGGER_URL,  
     API_URL,
     config={  # Swagger UI config overrides
-        'app_name': "Test application"
+        'app_name': "CODUCT Crawlers"
     },
 )
 
@@ -35,52 +35,30 @@ app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 def status():
     return "Alive"
 
-@app.route('/freelance/<string:keyword>')
-def respose(keyword):
-    args = request.args
-    quantity = args.get("MaxQuantity", type=int)
-    access_token = args.get("ACCESS_TOKEN", type=str)
-    if Verify_credentials(access_token):
-        browser = Generate_browser()
-        try:
-            browser = freelance_base.RedirectPage(keyword,browser)
-            oferts = freelance_base.TakeInfo(browser,quantity)
-            freelance_base.Logout(browser)
-            return jsonify({'keyword' : keyword,
-                'quantity' : len(oferts),
-                'data':oferts})
-        except Exception as err:
-            mylogger.warning(f"Unexpected ERROR Taking Info {err}")
-            raise err
-        finally:
-            browser.quit()
-            mylogger.debug(f"Closing Browser")
-
+@app.route('/api/freelance')  #, methods =["POST"]
+def Crawl_post_freelance():
+    handler = Handler_request(request)
+    user=None
+    password = None
+    if "user" in request.json and "pass" in request.json:
+        user = request.json["user"]
+        password = request.json["pass"]
     else:
-        invalid_ACCESS_TOKEN = jsonify({'keyword' : keyword,
-                'ACCESS_TOKEN' : access_token,
-                'status':'ERROR invalid ACCESS_TOKEN'})
-        resp = make_response(invalid_ACCESS_TOKEN, 210)
-        return resp
+        handler["respose_code"] = 213
 
-
-@app.route('/freelance', methods =["POST"])
-def crawl_freelancer():
-    user = request.json["user"]
-    searchWord = request.json["key"]
-    password = request.json["pass"]
-    quantity=None
-    if "quantity" in request.json:
-        quantity=int(request.json['quantity'])
-    access_token = request.json["ACCESS_TOKEN"]
-    if Verify_credentials(access_token):
+    if handler["valid"] and user and password:
         browser = Generate_browser()
+        keyword = handler["raw_keyword"]
+        url_keyword = handler["url_keyword"]
+        quantity = handler["quantity"]
+        access_token = handler["access_token"]    
+
         try:
             log_browser = freelance_base.LogIn(user, password,browser)
-            data = freelance_base.Take_Detail_data(log_browser, searchWord,quantity)
+            data = freelance_base.Take_Detail_data(log_browser, url_keyword,quantity)
             quantity_return = len(data)
             return jsonify({'user':user,
-                'keyword':searchWord,
+                'keyword':keyword,
                 'quantity':quantity_return,
                 'data':data})
         except Exception as err:
@@ -91,19 +69,23 @@ def crawl_freelancer():
             mylogger.debug(f"Closing Browser")
 
     else:
-        invalid_ACCESS_TOKEN = jsonify({'keyword' : keyword,
-                'ACCESS_TOKEN' : access_token,
-                'status':'ERROR invalid ACCESS_TOKEN'})
-        resp = make_response(invalid_ACCESS_TOKEN, 210)
+        error_code = handler["respose_code"]
+        error_m = RESPOSE_CODE_MESSAGE[error_code]
+        invalid_ACCESS_TOKEN = jsonify({'keyword' : handler["raw_keyword"],
+                'ACCESS_TOKEN' : handler["access_token"],
+                'status': error_m })
+        resp = make_response(invalid_ACCESS_TOKEN, error_code)
         return resp
     
-@app.route('/hays/<string:keyword>')
-def rcrawl_hays(keyword):
-    args = request.args
-    quantity = args.get("MaxQuantity", type=int)
-    access_token = args.get("ACCESS_TOKEN", type=str)
-    if Verify_credentials(access_token):
+@app.route('/api/hays/')
+def rcrawl_hays():
+    handler = Handler_request(request)
+    if handler["valid"]:
         browser = Generate_browser()
+        keyword = handler["raw_keyword"]
+        url_keyword = handler["url_keyword"]
+        quantity = handler["quantity"]
+        access_token = handler["access_token"]
         try:
             browser = hays_Base.RedirectPage(keyword,browser)
             oferts = hays_Base.Make_list(browser)
@@ -120,19 +102,23 @@ def rcrawl_hays(keyword):
             mylogger.debug(f"Closing Browser")
 
     else:
-        invalid_ACCESS_TOKEN = jsonify({'keyword' : keyword,
-                'ACCESS_TOKEN' : access_token,
-                'status':'ERROR invalid ACCESS_TOKEN'})
-        resp = make_response(invalid_ACCESS_TOKEN, 210)
+        error_code = handler["respose_code"]
+        error_m = RESPOSE_CODE_MESSAGE[error_code]
+        invalid_ACCESS_TOKEN = jsonify({'keyword' : handler["raw_keyword"],
+                'ACCESS_TOKEN' : handler["access_token"],
+                'status': error_m })
+        resp = make_response(invalid_ACCESS_TOKEN, error_code)
         return resp
 
-@app.route('/michaelpage/<string:keyword>')
-def crawl_michaelpage(keyword):
-    args = request.args
-    quantity = args.get("MaxQuantity", type=int)
-    access_token = args.get("ACCESS_TOKEN", type=str)
-    if Verify_credentials(access_token):
+@app.route('/api/michaelpage/')
+def crawl_michaelpage():
+    handler = Handler_request(request)
+    if handler["valid"]:
         browser = Generate_browser()
+        keyword = handler["raw_keyword"]
+        url_keyword = handler["url_keyword"]
+        quantity = handler["quantity"]
+        access_token = handler["access_token"]
         try:
             browser = michaelpage_Base.RedirectPage(keyword,browser)
             oferts = michaelpage_Base.Make_list(browser)
@@ -149,21 +135,25 @@ def crawl_michaelpage(keyword):
             mylogger.debug(f"Closing Browser")
 
     else:
-        invalid_ACCESS_TOKEN = jsonify({'keyword' : keyword,
-                'ACCESS_TOKEN' : access_token,
-                'status':'ERROR invalid ACCESS_TOKEN'})
-        resp = make_response(invalid_ACCESS_TOKEN, 210)
+        error_code = handler["respose_code"]
+        error_m = RESPOSE_CODE_MESSAGE[error_code]
+        invalid_ACCESS_TOKEN = jsonify({'keyword' : handler["raw_keyword"],
+                'ACCESS_TOKEN' : handler["access_token"],
+                'status': error_m })
+        resp = make_response(invalid_ACCESS_TOKEN, error_code)
         return resp
 
-@app.route('/solcom/<string:keyword>')
-def crawl_solcom(keyword):
-    args = request.args
-    quantity = args.get("MaxQuantity", type=int)
-    access_token = args.get("ACCESS_TOKEN", type=str)
-    if Verify_credentials(access_token):
+@app.route('/api/solcom/')
+def crawl_solcom():
+    handler = Handler_request(request)
+    if handler["valid"]:
         browser = Generate_browser()
+        keyword = handler["raw_keyword"]
+        url_keyword = handler["url_keyword"]
+        quantity = handler["quantity"]
+        access_token = handler["access_token"]
         try:
-            browser = solcom_base.RedirectPage(keyword,browser)
+            browser = solcom_base.RedirectPage(url_keyword,browser)
             oferts = solcom_base.Make_list(browser)
             data = solcom_base.TakeInfo(browser,oferts,quantity)
             quantity_return = len(data)
@@ -179,19 +169,25 @@ def crawl_solcom(keyword):
             mylogger.debug(f"Closing Browser")
 
     else:
-        invalid_ACCESS_TOKEN = jsonify({'keyword' : keyword,
-                'ACCESS_TOKEN' : access_token,
-                'status':'ERROR invalid ACCESS_TOKEN'})
-        resp = make_response(invalid_ACCESS_TOKEN, 210)
+        error_code = handler["respose_code"]
+        error_m = RESPOSE_CODE_MESSAGE[error_code]
+        invalid_ACCESS_TOKEN = jsonify({'keyword' : handler["raw_keyword"],
+                'ACCESS_TOKEN' : handler["access_token"],
+                'status': error_m })
+        resp = make_response(invalid_ACCESS_TOKEN, error_code)
         return resp
 
-@app.route('/gulp/<string:keyword>')
-def crawl_gulp(keyword):
+@app.route('/api/gulp/')
+def crawl_gulp():
     args = request.args
     exclusive_gulp = args.get("exclusive_gulp", type=bool)
-    access_token = args.get("ACCESS_TOKEN", type=str)
-    if Verify_credentials(access_token):
+    handler = Handler_request(request)
+    if handler["valid"]:
         browser = Generate_browser()
+        keyword = handler["raw_keyword"]
+        url_keyword = handler["url_keyword"]
+        quantity = handler["quantity"]
+        access_token = handler["access_token"]
         try:
             browser = gulp_base.RedirectPage(keyword,browser)
             oferts = gulp_base.Make_list(browser)
@@ -212,19 +208,25 @@ def crawl_gulp(keyword):
             mylogger.debug(f"Closing Browser")
 
     else:
-        invalid_ACCESS_TOKEN = jsonify({'keyword' : keyword,
-                'ACCESS_TOKEN' : access_token,
-                'status':'ERROR invalid ACCESS_TOKEN'})
-        resp = make_response(invalid_ACCESS_TOKEN, 210)
+        error_code = handler["respose_code"]
+        error_m = RESPOSE_CODE_MESSAGE[error_code]
+        invalid_ACCESS_TOKEN = jsonify({'keyword' : handler["raw_keyword"],
+                'ACCESS_TOKEN' : handler["access_token"],
+                'status': error_m })
+        resp = make_response(invalid_ACCESS_TOKEN, error_code)
         return resp
 
-
-@app.route('/ferchau/<string:keyword>')
-def crawl_ferchau(keyword):
-    args = request.args
-    quantity = args.get("MaxQuantity", type=int)
-    access_token = args.get("ACCESS_TOKEN", type=str)
-    if Verify_credentials(access_token):
+@app.route('/api/ferchau/')
+def crawl_ferchau():
+    quantity = 20
+    handler = Handler_request(request)
+    if handler["valid"]:
+        browser = Generate_browser()
+        keyword = handler["raw_keyword"]
+        url_keyword = handler["url_keyword"]
+        if handler["quantity"]:
+            quantity = handler["quantity"]
+        access_token = handler["access_token"]
         try:
             oferts = ferchau_base.Get_proposals(keyword,quantity)
             data = ferchau_base.Take_data(oferts)
@@ -238,10 +240,12 @@ def crawl_ferchau(keyword):
             raise err
 
     else:
-        invalid_ACCESS_TOKEN = jsonify({'keyword' : keyword,
-                'ACCESS_TOKEN' : access_token,
-                'status':'ERROR invalid ACCESS_TOKEN'})
-        resp = make_response(invalid_ACCESS_TOKEN, 210)
+        error_code = handler["respose_code"]
+        error_m = RESPOSE_CODE_MESSAGE[error_code]
+        invalid_ACCESS_TOKEN = jsonify({'keyword' : handler["raw_keyword"],
+                'ACCESS_TOKEN' : handler["access_token"],
+                'status': error_m })
+        resp = make_response(invalid_ACCESS_TOKEN, error_code)
         return resp
 
 if __name__ == "__main__":

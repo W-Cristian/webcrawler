@@ -61,24 +61,38 @@ def TakeInfo (browser,data,quantity=None):
 
         browser.get(data[x]["link"])
         time.sleep(2)
-
-        tasks =  browser.find_element(By.CLASS_NAME, "hays__job__detail__your-task")
-        details = tasks.find_elements(By.CSS_SELECTOR, "li")
         task_array = ""
-        for i in details:
-            task_array = task_array + i.text + "| "
+        try:
+            tasks =  browser.find_element(By.CLASS_NAME, "hays__job__detail__your-task")
+            details = tasks.find_elements(By.CSS_SELECTOR, "li")
+            for i in details:
+                task_array = task_array + i.text + "| "
+                task_array = task_array[:-1]
+        except Exception as err:
+            task_array = None
+            mylogger.debug("EXPETED ERROR -{err}")
 
-        competences =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-qualifications")
-        details = competences.find_elements(By.CSS_SELECTOR, "li")
         competences_array = ""
-        for i in details:
-            competences_array =competences_array + i.text + "| "
+        try:
+            competences =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-qualifications")
+            details = competences.find_elements(By.CSS_SELECTOR, "li")
+            for i in details:
+                competences_array =competences_array + i.text + "| "
+                competences_array = competences_array[:-1]
+        except Exception as err:
+            competences_array = None
+            mylogger.debug("EXPETED ERROR -{err}")
 
-        advantages =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-advantages")
-        details = advantages.find_elements(By.CSS_SELECTOR, "li")
         advantages_array = ""
-        for i in details:
-            advantages_array = advantages_array + i.text + "| "
+        try: 
+            advantages =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-advantages")
+            details = advantages.find_elements(By.CSS_SELECTOR, "li")
+            for i in details:
+                advantages_array = advantages_array + i.text + "| "
+                advantages_array = advantages_array[:-1]
+        except Exception as err:
+            advantages_array = None
+            mylogger.debug("EXPETED ERROR -{err}")
 
         contact_holder =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-contact-at-hays")
         details = contact_holder.find_elements(By.CSS_SELECTOR, "a")
@@ -98,9 +112,9 @@ def TakeInfo (browser,data,quantity=None):
             contact["name"] = name_el.text.replace("Mein Ansprechpartner\n","")        
                 
         description = {}
-        description["tasks"] = task_array[:-1]
-        description["advantages"] = advantages_array[:-1]
-        description["competences"] = competences_array[:-1]
+        description["tasks"] = task_array
+        description["advantages"] = advantages_array
+        description["competences"] = competences_array
 
         obj = {
         "header" : data[x]["header"],

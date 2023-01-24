@@ -40,69 +40,15 @@
     }
   ],
   "paths":{
-    "/freelance/{key}":{
+    "/api/freelance/": {
         "get": {
-          "tags": [
-            "freelance"
-          ],
-          "summary": "Given a KEY, the page is consulted to return the results obtained from project offers",
-          "parameters": [
-            {
-              "$ref": "#/components/parameters/MaxQuantity"
-            },
-            {
-              "$ref": "#/components/parameters/key"
-            },
-            {
-              "$ref": "#/components/parameters/ACCESS_TOKEN"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "successful operation",
-              "content": {
-                "application/json": {
-                  "schema": {
-                      "$ref": "#/components/schemas/freelanceRespose"
-                    }
-                  }
-                }
-            },
-            "210": {                
-              "description": "invalid ACCESS_TOKEN",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "keyword": {
-                        "type": "string"
-                      },
-                      "ACCESS_TOKEN": {
-                        "type": "string"
-                      },
-                      "status": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "400": {
-              "description": "Failed. Misunderstood Request."
-            },
-            "500": {
-                "description": "internal server error. page structure may change so api need and update"
-              }
-          }
-        }
-    },
-      
-    "/freelance": {
-        "post": {
             "tags": [
               "freelance"
+            ],
+            "parameters": [
+              {
+                "$ref": "#/components/parameters/ACCESS_TOKEN"
+              }
             ],
             "summary": "Given a word and the credentials of a valid user, a list of the projects found is returned including contact information (if available).",
             "requestBody": {
@@ -135,18 +81,27 @@
               "content": {
                 "application/json": {
                   "schema": {
-                    "type": "object",
-                    "properties": {
-                      "keyword": {
-                        "type": "string"
-                      },
-                      "ACCESS_TOKEN": {
-                        "type": "string"
-                      },
-                      "status": {
-                        "type": "string"
-                      }
-                    }
+                    "$ref": "#/components/schemas/errorRespose"
+                  }
+                }
+              }
+            },
+            "211": {                
+              "description": "Missing keyword",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorRespose"
+                  }
+                }
+              }
+            },
+            "213": {                
+              "description": "Missing user or password",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorRespose"
                   }
                 }
               }
@@ -161,19 +116,25 @@
           }
       },
 
-    "/hays/{key}":{
+    "/api/hays/":{
         "get": {
           "tags": [
             "hays"
           ],
           "summary": "Given a KEY, the page is consulted to return the results obtained from project offers",
+          "requestBody": {
+            "description": "send information required to perform the search ",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/defaultRequest"
+                }
+              }
+            }
+          },
           "parameters": [
-            {
-              "$ref": "#/components/parameters/MaxQuantity"
-            },
-            {
-              "$ref": "#/components/parameters/key"
-            },
+
             {
               "$ref": "#/components/parameters/ACCESS_TOKEN"
             }
@@ -194,18 +155,27 @@
               "content": {
                 "application/json": {
                   "schema": {
-                    "type": "object",
-                    "properties": {
-                      "keyword": {
-                        "type": "string"
-                      },
-                      "ACCESS_TOKEN": {
-                        "type": "string"
-                      },
-                      "status": {
-                        "type": "string"
-                      }
-                    }
+                    "$ref": "#/components/schemas/errorRespose"
+                  }
+                }
+              }
+            },
+            "211": {                
+              "description": "Missing keyword",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorRespose"
+                  }
+                }
+              }
+            },
+            "213": {                
+              "description": "Missing user or password",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorRespose"
                   }
                 }
               }
@@ -220,19 +190,24 @@
         }
     },
 
-    "/michaelpage/{key}":{
+    "/api/michaelpage/":{
         "get": {
           "tags": [
             "michaelpage"
           ],
           "summary": "Given a KEY, the page is consulted to return the results obtained from project offers",
+          "requestBody": {
+            "description": "send information required to perform the search ",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/defaultRequest"
+                }
+              }
+            }
+          },
           "parameters": [
-            {
-              "$ref": "#/components/parameters/MaxQuantity"
-            },
-            {
-              "$ref": "#/components/parameters/key"
-            },
             {
               "$ref": "#/components/parameters/ACCESS_TOKEN"
             }
@@ -253,18 +228,27 @@
               "content": {
                 "application/json": {
                   "schema": {
-                    "type": "object",
-                    "properties": {
-                      "keyword": {
-                        "type": "string"
-                      },
-                      "ACCESS_TOKEN": {
-                        "type": "string"
-                      },
-                      "status": {
-                        "type": "string"
-                      }
-                    }
+                    "$ref": "#/components/schemas/errorRespose"
+                  }
+                }
+              }
+            },
+            "211": {                
+              "description": "Missing keyword",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorRespose"
+                  }
+                }
+              }
+            },
+            "213": {                
+              "description": "Missing user or password",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorRespose"
                   }
                 }
               }
@@ -279,23 +263,29 @@
           }
         },    
         
-    "/solcom/{key}":{
+    "/api/solcom/":{
           "get": {
             "tags": [
               "solcom"
             ],
             "parameters": [
-              {
-                "$ref": "#/components/parameters/MaxQuantity"
-              },
-              {
-                "$ref": "#/components/parameters/key"
-              },
+
               {
                 "$ref": "#/components/parameters/ACCESS_TOKEN"
               }
             ],
             "summary": "Given a KEY, the page is consulted to return the results obtained from project offers",
+            "requestBody": {
+              "description": "send information required to perform the search ",
+              "required": true,
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/defaultRequest"
+                  }
+                }
+              }
+            },
             "responses": {
               "200": {
                 "description": "successful operation",
@@ -308,26 +298,35 @@
                   }
               },
               "210": {                
-              "description": "invalid ACCESS_TOKEN",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "keyword": {
-                        "type": "string"
-                      },
-                      "ACCESS_TOKEN": {
-                        "type": "string"
-                      },
-                      "status": {
-                        "type": "string"
-                      }
+                "description": "invalid ACCESS_TOKEN",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/errorRespose"
                     }
                   }
                 }
-              }
-            },
+              },
+              "211": {                
+                "description": "Missing keyword",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/errorRespose"
+                    }
+                  }
+                }
+              },
+              "213": {                
+                "description": "Missing user or password",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/errorRespose"
+                    }
+                  }
+                }
+              },
               "400": {
                 "description": "Failed. Misunderstood Request."
               },
@@ -338,7 +337,7 @@
             }
           },
 
-    "/gulp/{key}":{
+    "/api/gulp/":{
             "get": {
               "tags": [
                 "gulp"
@@ -346,22 +345,30 @@
               "parameters": 
               [
                 {
-                "name": "exclusive_gulp",
-                "in": "query",
-                "description": "determines if the results returned will include offers from outside gulp",
-                "required": false,
-                "schema": {
-                  "type": "boolean "
-                }
-                },
-                {
-                  "$ref": "#/components/parameters/key"
+                  "name": "exclusive_gulp",
+                  "in": "query",
+                  "description": "determines if the results returned will include offers from outside gulp",
+                  "required": false,
+                  "schema": {
+                    "type": "boolean "
+                  }
                 },
                 {
                   "$ref": "#/components/parameters/ACCESS_TOKEN"
                 }
               ],
               "summary": "Given a KEY, the page is consulted to return the results obtained from project offers",
+              "requestBody": {
+                "description": "send information required to perform the search ",
+                "required": true,
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/defaultRequest"
+                    }
+                  }
+                }
+              },
               "responses": {
                 "200": {
                   "description": "successful operation",
@@ -374,26 +381,35 @@
                     }
                 },
                 "210": {                
-              "description": "invalid ACCESS_TOKEN",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "keyword": {
-                        "type": "string"
-                      },
-                      "ACCESS_TOKEN": {
-                        "type": "string"
-                      },
-                      "status": {
-                        "type": "string"
+                  "description": "invalid ACCESS_TOKEN",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/errorRespose"
                       }
                     }
                   }
-                }
-              }
-            },
+                },
+                "211": {                
+                  "description": "Missing keyword",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/errorRespose"
+                      }
+                    }
+                  }
+                },
+                "213": {                
+                  "description": "Missing user or password",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/errorRespose"
+                      }
+                    }
+                  }
+                },
                 "400": {
                   "description": "Failed. Misunderstood Request."
                 },
@@ -404,91 +420,85 @@
               }
             },
 
-            "/ferchau/{key}":{
-              "get": {
-                "tags": [
-                  "ferchau"
-                ],
-                "parameters": [
-                  {
-                    "$ref": "#/components/parameters/MaxQuantity"
-                  },
-                  {
-                    "$ref": "#/components/parameters/key"
-                  },
-                  {
-                    "$ref": "#/components/parameters/ACCESS_TOKEN"
-                  }
-                ],
-                "summary": "Given a KEY, the page is consulted to return the results obtained from project offers",
-                "responses": {
-                  "200": {
-                    "description": "successful operation",
-                    "content": {
-                      "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/ferchauRespose"
-                          }
-                        }
-                      }
-                  },
-                  "210": {                
-                  "description": "invalid ACCESS_TOKEN",
-                  "content": {
-                    "application/json": {
-                      "schema": {
-                        "type": "object",
-                        "properties": {
-                          "keyword": {
-                            "type": "string"
-                          },
-                          "ACCESS_TOKEN": {
-                            "type": "string"
-                          },
-                          "status": {
-                            "type": "string"
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
-                  "400": {
-                    "description": "Failed. Misunderstood Request."
-                  },
-                  "500": {
-                    "description": "internal server error. page structure may change so api need and update"
-                      }
+    "/api/ferchau/":{
+      "get": {
+        "tags": [
+          "ferchau"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ACCESS_TOKEN"
+          }
+        ],
+        "summary": "Given a KEY, the page is consulted to return the results obtained from project offers",
+        "requestBody": {
+          "description": "send information required to perform the search ",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/defaultRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                    "$ref": "#/components/schemas/ferchauRespose"
                   }
                 }
               }
+          },
+          "210": {                
+            "description": "invalid ACCESS_TOKEN",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorRespose"
+                }
+              }
+            }
+          },
+          "211": {                
+            "description": "Missing keyword",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorRespose"
+                }
+              }
+            }
+          },
+          "213": {                
+            "description": "Missing user or password",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorRespose"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed. Misunderstood Request."
+          },
+          "500": {
+            "description": "internal server error. page structure may change so api need and update"
+              }
+          }
+        }
+      }
     },
 
   "components": {
     "parameters": {
-      "MaxQuantity": {
-        "name": "MaxQuantity",
-        "in": "query",
-        "description": "maximum number of returned offers",
-        "required": false,
-        "schema": {
-          "type": "integer",
-          "format": "int32",
-          "minimum": 1
-        }
-      },
-      "key": {
-        "name": "key",
-        "in": "path",
-        "description": "word to search for in the repositories ",
-        "required": true,
-        "schema": {
-          "type": "string"
-        }
-      },
       "ACCESS_TOKEN": {
         "name": "ACCESS_TOKEN",
-        "in": "path",
+        "in": "header",
         "description": "is needed to run any action in the api",
         "required": true,
         "schema": {
@@ -497,7 +507,22 @@
       }
     },
     "schemas": {
-
+      "defaultRequest": {
+        "type": "object",
+        "properties": {
+          "MaxQuantity": {
+            "type": "integer",
+            "required": false,
+            "minimum": 1,
+            "maximum": 20,
+            "format": "number"
+          },
+          "keyword": {
+            "type": "string",
+            "required": true
+          }
+        }
+      },
       "freelanceRespose": {
         "type": "object",
         "properties": {
@@ -585,18 +610,14 @@
             "type": "string",
             "format": "password"
           },
-          "ACCESS_TOKEN": {
-            "type": "string",
-            "format": "password"
-          },
-          "quantity": {
+          "MaxQuantity": {
             "type": "integer",
             "required": false,
             "minimum": 1,
             "maximum": 20,
             "format": "number"
           },
-          "key": {
+          "keyword": {
             "type": "string"
           }
         }
@@ -979,6 +1000,20 @@
                 }
               }
             }
+          }
+        }
+      },
+      "errorRespose" : {                    
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string"
+          },
+          "ACCESS_TOKEN": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
           }
         }
       }
