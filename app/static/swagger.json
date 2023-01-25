@@ -41,7 +41,7 @@
   ],
   "paths":{
     "/api/freelance/": {
-        "get": {
+        "post": {
             "tags": [
               "freelance"
             ],
@@ -117,7 +117,7 @@
       },
 
     "/api/hays/":{
-        "get": {
+        "post": {
           "tags": [
             "hays"
           ],
@@ -191,7 +191,7 @@
     },
 
     "/api/michaelpage/":{
-        "get": {
+        "post": {
           "tags": [
             "michaelpage"
           ],
@@ -264,7 +264,7 @@
         },    
         
     "/api/solcom/":{
-          "get": {
+          "post": {
             "tags": [
               "solcom"
             ],
@@ -338,7 +338,7 @@
           },
 
     "/api/gulp/":{
-            "get": {
+            "post": {
               "tags": [
                 "gulp"
               ],
@@ -364,12 +364,19 @@
                 "content": {
                   "application/json": {
                     "schema": {
-                      "$ref": "#/components/schemas/defaultRequest"
+                        "type": "object",
+                        "properties": {
+                          "keyword": {
+                            "type": "string",
+                            "required": true
+                          }
+                        }
+                      }
                     }
                   }
                 }
               },
-              "responses": {
+            "responses": {
                 "200": {
                   "description": "successful operation",
                   "content": {
@@ -417,11 +424,10 @@
                   "description": "internal server error. page structure may change so api need and update"
                     }
                 }
-              }
-            },
+      },
 
     "/api/ferchau/":{
-      "get": {
+      "post": {
         "tags": [
           "ferchau"
         ],

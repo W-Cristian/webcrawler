@@ -5,10 +5,13 @@ from selenium.webdriver.common.by import By
 import time
 
 def RedirectPage(searchWord,browser):
+    # This page treats the transformation of special characters differently,
+    # so it is done directly in the text passed by parameter.
+    searchWord = searchWord.replace('#','').replace('/','-').replace(' ','-').replace('.','').lower()
     url = f"https://www.michaelpage.de/jobs/{searchWord}?sort_by=most_recent"
-    time.sleep(2)
+    mylogger.debug(f"searchword -----{searchWord}")
     browser.get(url)
-    time.sleep(2)
+    time.sleep(3)
 
     return browser
 
@@ -40,22 +43,40 @@ def TakeInfo (browser,data,quantity=None):
     for x in index:
 
         count=count+1
-        mylogger.debug("taking details from -{}- link: {}".format(count,data[x]["link"]))
+        mylogger.debug(f"taking details from -{count}- link: {data[x]['link']}")
 
         browser.get(data[x]["link"])
         time.sleep(2)
-        container =  browser.find_element(By.ID, "job-description")
+
+        header =  browser.find_element(By.CLASS_NAME, "job-title").text
+        try:
+            container =  browser.find_element(By.ID, "job-description")
+        except Exception as err:
+            mylogger.debug(f"EXPETED ERROR - NOT FOUND ------job-description IN -{data[x]['link']}- SKIP")
+            continue
+
         last_update = container.find_element(By.CSS_SELECTOR, "p").text
 
-        tasks =  container.find_elements(By.XPATH, ".//div[@class='job_advert__job-desc-role']//li")
+        tasks_container =  container.find_element(By.XPATH, ".//div[@class='job_advert__job-desc-role']")
         task_array = ""
-        for i in tasks:
-            task_array = task_array + i.text + "|"
+        tasks = tasks_container.find_elements(By.CSS_SELECTOR, "li")
+        if len(tasks) > 0:
+            for i in tasks:
+                task_array = task_array + i.text + "|"
+                task_array = task_array[:-1]
+        else:
+            task_array = tasks_container.text
+        
 
-        competences = container.find_elements(By.XPATH, ".//div[@class='job_advert__job-desc-candidate']//li")
+        competences_container = container.find_element(By.XPATH, ".//div[@class='job_advert__job-desc-candidate']")
         competences_array = ""
-        for i in competences:
-            competences_array = competences_array + i.text + "|"
+        competences = competences_container.find_elements(By.CSS_SELECTOR, "li")
+        if len(competences) > 0:
+            for i in competences:
+                competences_array = competences_array + i.text + "|"
+                competences_array = competences_array[:-1]
+        else:
+            competences_array = competences_container.text
 
         contact_holder = container.find_elements(By.XPATH, ".//div[@class='job-contact-info']//div[@class='field--item']")
         contact = {"reference_number" : contact_holder[1].text,
@@ -72,10 +93,10 @@ def TakeInfo (browser,data,quantity=None):
             detailsobj[labels_details[i].text] = details[i].text
 
         obj = {
-        "header" : data[x]["header"],
+        "header" : header,
         "prospectnumber" : contact_holder[1].text,
-        "tasks" : task_array[:-1],
-        "competences" : competences_array[:-1],
+        "tasks" : task_array,
+        "competences" : competences_array,
         "details" : detailsobj,
         "contact" : contact,
         "link" : data[x]["link"]

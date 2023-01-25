@@ -35,7 +35,7 @@ app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 def status():
     return "Alive"
 
-@app.route('/api/freelance')  #, methods =["POST"]
+@app.route('/api/freelance', methods =["POST"])
 def Crawl_post_freelance():
     handler = Handler_request(request)
     user=None
@@ -77,7 +77,7 @@ def Crawl_post_freelance():
         resp = make_response(invalid_ACCESS_TOKEN, error_code)
         return resp
     
-@app.route('/api/hays/')
+@app.route('/api/hays/', methods =["POST"])
 def rcrawl_hays():
     handler = Handler_request(request)
     if handler["valid"]:
@@ -110,7 +110,7 @@ def rcrawl_hays():
         resp = make_response(invalid_ACCESS_TOKEN, error_code)
         return resp
 
-@app.route('/api/michaelpage/')
+@app.route('/api/michaelpage/', methods =["POST"])
 def crawl_michaelpage():
     handler = Handler_request(request)
     if handler["valid"]:
@@ -143,7 +143,7 @@ def crawl_michaelpage():
         resp = make_response(invalid_ACCESS_TOKEN, error_code)
         return resp
 
-@app.route('/api/solcom/')
+@app.route('/api/solcom/', methods =["POST"])
 def crawl_solcom():
     handler = Handler_request(request)
     if handler["valid"]:
@@ -177,7 +177,7 @@ def crawl_solcom():
         resp = make_response(invalid_ACCESS_TOKEN, error_code)
         return resp
 
-@app.route('/api/gulp/')
+@app.route('/api/gulp/', methods =["POST"])
 def crawl_gulp():
     args = request.args
     exclusive_gulp = args.get("exclusive_gulp", type=bool)
@@ -216,7 +216,7 @@ def crawl_gulp():
         resp = make_response(invalid_ACCESS_TOKEN, error_code)
         return resp
 
-@app.route('/api/ferchau/')
+@app.route('/api/ferchau/', methods =["POST"])
 def crawl_ferchau():
     quantity = 20
     handler = Handler_request(request)

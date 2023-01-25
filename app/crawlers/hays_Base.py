@@ -67,7 +67,7 @@ def TakeInfo (browser,data,quantity=None):
             details = tasks.find_elements(By.CSS_SELECTOR, "li")
             for i in details:
                 task_array = task_array + i.text + "| "
-                task_array = task_array[:-1]
+            task_array = task_array[:-2]
         except Exception as err:
             task_array = None
             mylogger.debug("EXPETED ERROR -{err}")
@@ -78,7 +78,7 @@ def TakeInfo (browser,data,quantity=None):
             details = competences.find_elements(By.CSS_SELECTOR, "li")
             for i in details:
                 competences_array =competences_array + i.text + "| "
-                competences_array = competences_array[:-1]
+            competences_array = competences_array[:-2]
         except Exception as err:
             competences_array = None
             mylogger.debug("EXPETED ERROR -{err}")
@@ -89,7 +89,7 @@ def TakeInfo (browser,data,quantity=None):
             details = advantages.find_elements(By.CSS_SELECTOR, "li")
             for i in details:
                 advantages_array = advantages_array + i.text + "| "
-                advantages_array = advantages_array[:-1]
+            advantages_array = advantages_array[:-2]
         except Exception as err:
             advantages_array = None
             mylogger.debug("EXPETED ERROR -{err}")

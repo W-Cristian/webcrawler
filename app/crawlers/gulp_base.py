@@ -47,20 +47,24 @@ def TakeInfo (browser,data,quantity=None):
             browser.get(data[x]["link"])
             time.sleep(2)
             container =  browser.find_element(By.CLASS_NAME, "element-box")
-            description_container = container.find_elements(By.XPATH, ".//div[@class='row']")
+            description_container = container.find_elements(By.CLASS_NAME, "form-value")
             detailsobj = {
-            "Referenznummer" : description_container[0].find_element(By.XPATH, ".//span[@class='ng-star-inserted']").get_attribute('innerHTML').strip(),
-            "Veröffentlicht" : description_container[1].find_element(By.XPATH, ".//span[@class='ng-star-inserted']").get_attribute('innerHTML').strip(),
-            "Beginn" : description_container[2].find_element(By.XPATH, ".//span[@class='ng-star-inserted']").get_attribute('innerHTML').strip(),
-            "Dauer" : description_container[3].find_element(By.XPATH, ".//span[@class='ng-star-inserted']").get_attribute('innerHTML').strip(),
-            "Einsatzort" : description_container[4].find_element(By.XPATH, ".//span[@class='ng-star-inserted']").get_attribute('innerHTML').strip(),
+            "Referenznummer" : description_container[0].text,
+            "Veröffentlicht" : description_container[1].text,
+            "Beginn" : description_container[2].text,
+            "Dauer" : description_container[3].text,
+            "Einsatzort" : description_container[4].text,
             }
-            description_array = description_container[5].find_element(By.XPATH, ".//span[@class='ng-star-inserted']").text,
+            description_array = description_container[5].text,
 
-            competences_array = container.find_elements(By.XPATH, ".//div[@class='form-value']//div")
+            competences_array = description_container[6].find_elements(By.XPATH, ".//div")
             competences = ""
-            for i in competences_array:
-                competences = competences + i.text + "|" 
+            if len(competences_array) > 0: 
+                for i in competences_array:
+                    competences = competences + i.text + "|"
+                competences = competences[:-1]
+            else:
+                competences = description_container[6].text
                 
             contact_array = container.find_elements(By.XPATH, ".//section[@class='ng-star-inserted']//div[@class='ng-star-inserted']")
             link = contact_array[2].find_element(By.CSS_SELECTOR, "a"),
@@ -78,7 +82,7 @@ def TakeInfo (browser,data,quantity=None):
             "contact" : contact,
             "description" : description_array[0],
             "prospectnumber" : detailsobj["Referenznummer"],
-            "competences" : competences[:-1],
+            "competences" : competences,
             "details" : detailsobj,
             "link" : data[x]["link"]
             }     
