@@ -4,9 +4,10 @@ from logger import mylogger
 from selenium.webdriver.common.by import By
 import time
 
-def RedirectPage(searchWord,browser):
+def Redirect_page(searchWord,browser):
     url = f"https://www.hays.de/jobsuche/stellenangebote-jobs/j/Contracting/3/p/1?q={searchWord}"
     time.sleep(2)
+    mylogger.debug(f"searchword -----{searchWord}")
     browser.get(url)
     time.sleep(2)
 
@@ -46,7 +47,7 @@ def Make_list (browser):
     mylogger.debug("taken -{}- links ...".format(len(propositions)))
     return propositions
 
-def TakeInfo (browser,data,quantity=None):
+def Take_info (browser,data,quantity=None):
     if quantity is not None and len(data)>quantity:
         index = range(0,quantity)
     else:
@@ -128,7 +129,7 @@ def TakeInfo (browser,data,quantity=None):
 
     return propositions
 
-def ReturnData(searchWord,oferts):
+def Return_data(searchWord,oferts):
     file_data = dict({"Key": searchWord,
     "quantity": len(oferts),
         "data":[]})

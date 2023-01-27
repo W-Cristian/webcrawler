@@ -1,9 +1,13 @@
+import sys
+sys.path.append('/app/utilities')
+from logger import mylogger
 import requests
 import json
 
 def Get_proposals(searchWord,quantity):
     url = f'https://api.ferchau.com/v4/recruiting/search?count=ferchau&limit={quantity}&query={searchWord}'
     respose = requests.request('GET',url, data="",headers={})
+    mylogger.debug(f"searchword -----{searchWord}")
     return json.loads(respose.text)
 
 def Take_details (id):

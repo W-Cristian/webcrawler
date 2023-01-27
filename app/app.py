@@ -9,6 +9,7 @@ import crawlers.michaelpage_Base as michaelpage_Base
 import crawlers.solcom_base as solcom_base
 import crawlers.gulp_base as gulp_base
 import crawlers.ferchau_base as ferchau_base
+import crawlers.austinfraser_base as austinfraser_base
 from crawlers.general_resources import Generate_browser
 
 app = Flask(__name__)
@@ -55,7 +56,7 @@ def Crawl_post_freelance():
 
         try:
             log_browser = freelance_base.LogIn(user, password,browser)
-            data = freelance_base.Take_Detail_data(log_browser, url_keyword,quantity)
+            data = freelance_base.Take_detail_data(log_browser, url_keyword,quantity)
             quantity_return = len(data)
             return jsonify({'user':user,
                 'keyword':keyword,
@@ -87,9 +88,9 @@ def rcrawl_hays():
         quantity = handler["quantity"]
         access_token = handler["access_token"]
         try:
-            browser = hays_Base.RedirectPage(keyword,browser)
+            browser = hays_Base.Redirect_page(keyword,browser)
             oferts = hays_Base.Make_list(browser)
-            data = hays_Base.TakeInfo(browser,oferts,quantity)
+            data = hays_Base.Take_info(browser,oferts,quantity)
             quantity_return = len(data)
             return jsonify({'keyword' : keyword,
                 'quantity' : quantity_return,
@@ -120,9 +121,9 @@ def crawl_michaelpage():
         quantity = handler["quantity"]
         access_token = handler["access_token"]
         try:
-            browser = michaelpage_Base.RedirectPage(keyword,browser)
+            browser = michaelpage_Base.Redirect_page(keyword,browser)
             oferts = michaelpage_Base.Make_list(browser)
-            data = michaelpage_Base.TakeInfo(browser,oferts,quantity)
+            data = michaelpage_Base.Take_info(browser,oferts,quantity)
             quantity_return = len(data)
             return jsonify({'keyword' : keyword,
                 'quantity' : quantity_return,
@@ -153,9 +154,9 @@ def crawl_solcom():
         quantity = handler["quantity"]
         access_token = handler["access_token"]
         try:
-            browser = solcom_base.RedirectPage(url_keyword,browser)
+            browser = solcom_base.Redirect_page(url_keyword,browser)
             oferts = solcom_base.Make_list(browser)
-            data = solcom_base.TakeInfo(browser,oferts,quantity)
+            data = solcom_base.Take_info(browser,oferts,quantity)
             quantity_return = len(data)
             return jsonify({'keyword' : keyword,
                 'quantity' : quantity_return,
@@ -189,9 +190,9 @@ def crawl_gulp():
         quantity = handler["quantity"]
         access_token = handler["access_token"]
         try:
-            browser = gulp_base.RedirectPage(keyword,browser)
+            browser = gulp_base.Redirect_page(keyword,browser)
             oferts = gulp_base.Make_list(browser)
-            data = gulp_base.TakeInfo(browser,oferts)
+            data = gulp_base.Take_info(browser,oferts)
             if not exclusive_gulp:
                 propositions_solcom = gulp_base.TakeInfo_solcom(browser,data["solcom"])
                 data["solcom"] = propositions_solcom
@@ -238,6 +239,43 @@ def crawl_ferchau():
         except Exception as err:
             mylogger.warning(f"Unexpected ERROR Taking Info {err}")
             raise err
+        finally:
+            browser.quit()
+            mylogger.debug(f"Closing Browser")
+
+    else:
+        error_code = handler["respose_code"]
+        error_m = RESPOSE_CODE_MESSAGE[error_code]
+        invalid_ACCESS_TOKEN = jsonify({'keyword' : handler["raw_keyword"],
+                'ACCESS_TOKEN' : handler["access_token"],
+                'status': error_m })
+        resp = make_response(invalid_ACCESS_TOKEN, error_code)
+        return resp
+
+@app.route('/api/austinfraser/', methods =["POST"])
+def crawl_austinfraser():
+    handler = Handler_request(request)
+    if handler["valid"]:
+        browser = Generate_browser()
+        keyword = handler["raw_keyword"]
+        url_keyword = handler["url_keyword"]
+        quantity = handler["quantity"]
+        access_token = handler["access_token"]
+        try:
+            browser = austinfraser_base.Redirect_page(url_keyword,browser)
+            oferts = austinfraser_base.Make_list(browser)
+            data = austinfraser_base.Take_info(browser,oferts,quantity)
+            quantity_return = len(data)
+            return jsonify({'keyword' : keyword,
+                'quantity' : quantity_return,
+                'data':data})
+
+        except Exception as err:
+            mylogger.warning(f"Unexpected ERROR Taking Info {err}")
+            raise err
+        finally:
+            browser.quit()
+            mylogger.debug(f"Closing Browser")
 
     else:
         error_code = handler["respose_code"]

@@ -10,7 +10,7 @@
       "url": "http://localhost:4000"
     },
     {
-      "url": "http://coductcrawler.germanywestcentral.azurecontainer.io:4000"
+      "url": "http://coductCrawler.germanywestcentral.azurecontainer.io:4000"
     }
   ],
   "tags": [
@@ -37,6 +37,10 @@
     {
       "name": "ferchau",
       "description": "This point returns information making requests to the page https://www.ferchau.de"
+    },
+    {
+      "name": "austinfraser",
+      "description": "This point returns information making requests to the page https://www.austinfraser.com"
     }
   ],
   "paths":{
@@ -494,6 +498,79 @@
           },
           "500": {
             "description": "internal server error. page structure may change so api need and update"
+              }
+          }
+        }
+      },
+      "/api/austinfraser/":{
+        "post": {
+          "tags": [
+            "austinfraser"
+          ],
+          "summary": "Given a KEY, the page is consulted to return the results obtained from project offers",
+          "requestBody": {
+            "description": "send information required to perform the search ",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/defaultRequest"
+                }
+              }
+            }
+          },
+          "parameters": [
+
+            {
+              "$ref": "#/components/parameters/ACCESS_TOKEN"
+            }
+          ],
+          "responses": {
+            "200": {                
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                    "$ref": "#/components/schemas/asutinfraserRespose"
+                  }
+                }
+              }
+            },
+            "210": {                
+              "description": "invalid ACCESS_TOKEN",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorRespose"
+                  }
+                }
+              }
+            },
+            "211": {                
+              "description": "Missing keyword",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorRespose"
+                  }
+                }
+              }
+            },
+            "213": {                
+              "description": "Missing user or password",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorRespose"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Failed. Misunderstood Request."
+            },
+            "500": {
+                "description": "internal server error. page structure may change so api need and update"
               }
           }
         }
@@ -991,6 +1068,72 @@
                       "type": "string"
                     },
                     "adresse": {
+                      "type": "string"
+                    },
+                    "telephone": {
+                      "type": "string"
+                    },
+                    "mail": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "link": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "asutinfraserRespose": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer"
+          },
+          "data": {
+            "type": "array",
+            "items": 
+            {
+              "type": "object",
+              "properties": {
+                "header": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "prospectnumber": {
+                  "type": "string"
+                },
+                "details": {
+                  "type": "object",
+                  "properties": {
+                    "Published": {
+                      "type": "string"
+                    },
+                    "Salary": {
+                      "type": "string"
+                    },                    
+                    "Sector": {
+                      "type": "string"
+                    },
+                    "prospectnumber": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "contact": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "Linkedin": {
                       "type": "string"
                     },
                     "telephone": {

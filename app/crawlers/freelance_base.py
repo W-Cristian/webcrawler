@@ -4,7 +4,7 @@ from logger import mylogger
 from selenium.webdriver.common.by import By
 import time
 
-def RedirectPage(searchWord,browser):
+def Redirect_page(searchWord,browser):
     url = "https://www.freelance.de/"
     time.sleep(5)
     browser.get(url)
@@ -19,7 +19,7 @@ def RedirectPage(searchWord,browser):
     time.sleep(2)
     return browser
 
-def TakeInfo (browser,quantity=None):
+def Take_info (browser,quantity=None):
     divBox = browser.find_elements(By.XPATH, "//div[@class='list-item-main']")
     div_count = len(divBox)
     if quantity is not None:
@@ -77,7 +77,7 @@ def LogIn(user,password,browser):
 
 def Insert_search(log_browser,searchWord):
     project_url = f"https://www.freelance.de/search/project.php?__search_sort_by=2&__search_freetext={searchWord}&__search_sort_by_remote=2"
-    mylogger.debug("Looking for projects with -{}- as key ...".format(searchWord))
+    mylogger.debug(f"searchword -----{searchWord}")
     log_browser.get(project_url)
     time.sleep(2)
 
@@ -147,9 +147,9 @@ def Logout(log_browser):
     mylogger.debug("Logout freelance.de...")
 
 
-def Take_Detail_data(log_browser, searchWord,quantity=None):
+def Take_detail_data(log_browser, searchWord,quantity=None):
     Insert_search(log_browser,searchWord)
-    list_url = TakeInfo (log_browser,quantity)
+    list_url = Take_info (log_browser,quantity)
     detaildata = []
     count = 1
     for i in list_url:

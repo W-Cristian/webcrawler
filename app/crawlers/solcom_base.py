@@ -7,7 +7,7 @@ import time
 
 import json
 
-def RedirectPage(searchWord,browser):
+def Redirect_page(searchWord,browser):
     url = "https://www.solcom.de/de/projektportal"
     time.sleep(2)
     browser.get(url)
@@ -15,6 +15,8 @@ def RedirectPage(searchWord,browser):
 
     search_el = browser.find_element(By.ID, 'stichwort')
     search_el.send_keys(searchWord)
+    mylogger.debug(f"searchword -----{searchWord}")
+
     try:
         cookies = browser.find_element(By.CLASS_NAME, 'allow-essential-only')
         cookies.click()
@@ -46,7 +48,7 @@ def Make_list (browser):
 
     return propositions
 
-def TakeInfo (browser,data,quantity=None):
+def Take_info (browser,data,quantity=None):
     if quantity is not None and len(data)>quantity:
         index = range(0,quantity)
     else:

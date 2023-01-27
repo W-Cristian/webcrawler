@@ -4,7 +4,7 @@ from logger import mylogger
 from selenium.webdriver.common.by import By
 import time
 
-def RedirectPage(searchWord,browser):
+def Redirect_page(searchWord,browser):
     # This page treats the transformation of special characters differently,
     # so it is done directly in the text passed by parameter.
     searchWord = searchWord.replace('#','').replace('/','-').replace(' ','-').replace('.','').lower()
@@ -19,20 +19,27 @@ def Make_list (browser):
     divBox = browser.find_elements(By.XPATH, "//li[@class='views-row']")
     index = range(0, len(divBox))
     propositions = []
-    
+
+    # body = browser.find_element(By.CSS_SELECTOR, "body").get_attribute("innerHTML")
+    # lista = browser.find_elements(By.CLASS_NAME, "views-row")
+
+    # mylogger.debug(f" lista -{len(lista)}- ")
+    # f = open("michaelpage_Base.html", "a")
+    # f.write(body)
+    # f.close()
     for i in index:
     
         link = divBox[i].find_element(By.CSS_SELECTOR, "a")
         obj = {
         "header" : link.text,
         "link" : link.get_attribute('href')
-        }    
+        }
         propositions.append(obj)
     mylogger.debug("taken -{}- links ...".format(len(propositions)))
 
     return propositions
 
-def TakeInfo (browser,data,quantity=None):
+def Take_info (browser,data,quantity=None):
     if quantity is not None and len(data)>quantity:
         index = range(0,quantity)
     else:
