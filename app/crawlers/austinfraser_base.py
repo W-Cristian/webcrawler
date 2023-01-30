@@ -28,7 +28,7 @@ def Make_list (browser):
         "link" : link.get_attribute('href'),
         }    
         propositions.append(obj)
-    mylogger.debug("taken -{}- links ...".format(len(propositions)))
+    mylogger.info("taken -{}- links ...".format(len(propositions)))
     return propositions
 
 def Take_contact(browser,contact_url):
@@ -63,7 +63,7 @@ def Take_info (browser,data,quantity=None):
     for x in index:
 
         count=count+1
-        mylogger.debug(f"taking details from -{count}- link: {data[x]['link']}")
+        mylogger.info(f"taking details from -{count}- link: {data[x]['link']}")
         browser.get(data[x]["link"])
         time.sleep(2)
         container =  browser.find_element(By.ID, "extra-info")
@@ -83,7 +83,7 @@ def Take_info (browser,data,quantity=None):
             link =  contact_block.find_element(By.CSS_SELECTOR, "a").get_attribute('href')
             contact = Take_contact(browser,link)
         except:
-            mylogger.debug(f"EXPECTED ERROR - NOT FOUND .job-consultant-block.a")
+            mylogger.info(f"EXPECTED ERROR - NOT FOUND .job-consultant-block.a")
             contact = Take_contact(browser,None)
 
         contact["name"] = contact_name

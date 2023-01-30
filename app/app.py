@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, make_response
 from flask_swagger_ui import get_swaggerui_blueprint
 from  utilities.utilities import Verify_credentials,Handler_request,RESPOSE_CODE_MESSAGE
-from  utilities.logger import mylogger
+# from utilities.logger import mylogger
 
 import crawlers.freelance_base as freelance_base
 import crawlers.hays_Base as hays_Base
@@ -10,7 +10,11 @@ import crawlers.solcom_base as solcom_base
 import crawlers.gulp_base as gulp_base
 import crawlers.ferchau_base as ferchau_base
 import crawlers.austinfraser_base as austinfraser_base
+import crawlers.etengo_base as etengo_base
 from crawlers.general_resources import Generate_browser
+import logging
+
+mylogger = logging.getLogger("myLogger")
 
 app = Flask(__name__)
 
@@ -63,11 +67,11 @@ def Crawl_post_freelance():
                 'quantity':quantity_return,
                 'data':data})
         except Exception as err:
-            mylogger.warning(f"Unexpected ERROR Taking Info {err}")
+            mylogger.error(f"Unexpected ERROR Taking Info {err}")
             raise err
         finally:
             browser.quit()
-            mylogger.debug(f"Closing Browser")
+            mylogger.info(f"Closing Browser")
 
     else:
         error_code = handler["respose_code"]
@@ -96,11 +100,11 @@ def rcrawl_hays():
                 'quantity' : quantity_return,
                 'data':data})
         except Exception as err:
-            mylogger.warning(f"Unexpected ERROR Taking Info {err}")
+            mylogger.error(f"Unexpected ERROR Taking Info {err}")
             raise err
         finally:
             browser.quit()
-            mylogger.debug(f"Closing Browser")
+            mylogger.info(f"Closing Browser")
 
     else:
         error_code = handler["respose_code"]
@@ -129,11 +133,11 @@ def crawl_michaelpage():
                 'quantity' : quantity_return,
                 'data':data})
         except Exception as err:
-            mylogger.warning(f"Unexpected ERROR Taking Info {err}")
+            mylogger.error(f"Unexpected ERROR Taking Info {err}")
             raise err
         finally:
             browser.quit()
-            mylogger.debug(f"Closing Browser")
+            mylogger.info(f"Closing Browser")
 
     else:
         error_code = handler["respose_code"]
@@ -163,11 +167,11 @@ def crawl_solcom():
                 'data':data})
 
         except Exception as err:
-            mylogger.warning(f"Unexpected ERROR Taking Info {err}")
+            mylogger.error(f"Unexpected ERROR Taking Info {err}")
             raise err
         finally:
             browser.quit()
-            mylogger.debug(f"Closing Browser")
+            mylogger.info(f"Closing Browser")
 
     else:
         error_code = handler["respose_code"]
@@ -202,11 +206,11 @@ def crawl_gulp():
             return jsonify({'keyword' : keyword,
                 'data':data})
         except Exception as err:
-            mylogger.warning(f"Unexpected ERROR Taking Info {err}")
+            mylogger.error(f"Unexpected ERROR Taking Info {err}")
             raise err
         finally:
             browser.quit()
-            mylogger.debug(f"Closing Browser")
+            mylogger.info(f"Closing Browser")
 
     else:
         error_code = handler["respose_code"]
@@ -237,11 +241,11 @@ def crawl_ferchau():
                 'data':data})
 
         except Exception as err:
-            mylogger.warning(f"Unexpected ERROR Taking Info {err}")
+            mylogger.error(f"Unexpected ERROR Taking Info {err}")
             raise err
         finally:
             browser.quit()
-            mylogger.debug(f"Closing Browser")
+            mylogger.info(f"Closing Browser")
 
     else:
         error_code = handler["respose_code"]
@@ -271,11 +275,44 @@ def crawl_austinfraser():
                 'data':data})
 
         except Exception as err:
-            mylogger.warning(f"Unexpected ERROR Taking Info {err}")
+            mylogger.error(f"Unexpected ERROR Taking Info {err}")
             raise err
         finally:
             browser.quit()
-            mylogger.debug(f"Closing Browser")
+            mylogger.info(f"Closing Browser")
+
+    else:
+        error_code = handler["respose_code"]
+        error_m = RESPOSE_CODE_MESSAGE[error_code]
+        invalid_ACCESS_TOKEN = jsonify({'keyword' : handler["raw_keyword"],
+                'ACCESS_TOKEN' : handler["access_token"],
+                'status': error_m })
+        resp = make_response(invalid_ACCESS_TOKEN, error_code)
+        return resp
+
+@app.route('/api/etengo/', methods =["POST"])
+def crawl_etengo():
+    handler = Handler_request(request)
+    if handler["valid"]:
+        browser = Generate_browser()
+        keyword = handler["raw_keyword"]
+        url_keyword = handler["url_keyword"]
+        quantity = handler["quantity"]
+        access_token = handler["access_token"]
+        try:
+            oferts = etengo_base.Make_list(url_keyword)
+            data = etengo_base.Take_info(browser,oferts,quantity)
+            quantity_return = len(data)
+            return jsonify({'keyword' : keyword,
+                'quantity' : quantity_return,
+                'data':data})
+
+        except Exception as err:
+            mylogger.error(f"Unexpected ERROR Taking Info {err}")
+            raise err
+        finally:
+            browser.quit()
+            mylogger.info(f"Closing Browser")
 
     else:
         error_code = handler["respose_code"]

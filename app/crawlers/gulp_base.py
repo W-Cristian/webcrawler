@@ -7,7 +7,7 @@ import time
 
 def Redirect_page(searchWord,browser):
     url = f"https://www.gulp.de/gulp2/g/projekte?query={searchWord}&order=DATE_DESC"
-    mylogger.debug(f"searchword -----{searchWord}")
+    mylogger.info(f"searchword -----{searchWord}")
     time.sleep(2)
     browser.get(url)
     time.sleep(2)
@@ -25,7 +25,7 @@ def Make_list (browser):
         try:
             firma = divBox[i].find_element(By.XPATH, ".//span[@class='company ng-star-inserted']").text
         except Exception as e:
-            mylogger.debug("EXPECTED ERROR: NOT FOUND  - span[@class='company ng-star-inserted']")
+            mylogger.info("EXPECTED ERROR: NOT FOUND  - span[@class='company ng-star-inserted']")
             
         obj = {
         "header" : link.get_attribute('text'),
@@ -34,7 +34,7 @@ def Make_list (browser):
         }    
         
         propositions.append(obj)
-    mylogger.debug("taken -{}- links ...".format(len(propositions)))
+    mylogger.info("taken -{}- links ...".format(len(propositions)))
     return propositions
 
 def Take_info (browser,data,quantity=None):
@@ -91,7 +91,7 @@ def Take_info (browser,data,quantity=None):
             propositions["gulp"].append(obj)
 
         if data[x]["firma"] != None and "SOLCOM" in data[x]["firma"].upper():
-            mylogger.debug("taking details from link: {}".format(data[x]["link"]))
+            mylogger.info("taking details from link: {}".format(data[x]["link"]))
             browser.get(data[x]["link"])
             time.sleep(2)
 
@@ -111,7 +111,7 @@ def TakeInfo_solcom (browser,solcom_data):
     
     propositions_solcom = []
     for x in index:
-        mylogger.debug("taking details from solcom link: {}".format(solcom_data[x]["link"]))
+        mylogger.info("taking details from solcom link: {}".format(solcom_data[x]["link"]))
         browser.get(solcom_data[x]["link"])
         time.sleep(2)
         container =  browser.find_element(By.CLASS_NAME, "infos")

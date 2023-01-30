@@ -47,9 +47,9 @@ def Take_info (browser,quantity=None):
         "details" : details_array,
         "link" : link
         }     
-        mylogger.debug("-- links - {} ...".format(obj["link"]))
+        mylogger.info("-- links - {} ...".format(obj["link"]))
         propositions.append(obj)
-    mylogger.debug("taken -{}- links ...".format(len(propositions)))
+    mylogger.info("taken -{}- links ...".format(len(propositions)))
     return propositions
 
 def LogIn(user,password,browser):
@@ -71,13 +71,13 @@ def LogIn(user,password,browser):
     submit_btn_el = browser.find_element(By.XPATH, "//input[@name='login'][@type='submit']")
     submit_btn_el.click()
     time.sleep(2)
-    mylogger.debug("LogIn succesfully with credentials...")
+    mylogger.info("LogIn succesfully with credentials...")
 
     return browser
 
 def Insert_search(log_browser,searchWord):
     project_url = f"https://www.freelance.de/search/project.php?__search_sort_by=2&__search_freetext={searchWord}&__search_sort_by_remote=2"
-    mylogger.debug(f"searchword -----{searchWord}")
+    mylogger.info(f"searchword -----{searchWord}")
     log_browser.get(project_url)
     time.sleep(2)
 
@@ -144,7 +144,7 @@ def Logout(log_browser):
     url = "https://www.freelance.de/logout.php"
     log_browser.get(url)
     time.sleep(1)
-    mylogger.debug("Logout freelance.de...")
+    mylogger.info("Logout freelance.de...")
 
 
 def Take_detail_data(log_browser, searchWord,quantity=None):
@@ -160,7 +160,7 @@ def Take_detail_data(log_browser, searchWord,quantity=None):
         except Exception as err:
             mylogger.warning(f"Unexpected ERROR Taking contact {err}")
             contact=None
-        mylogger.debug("save data from -{}- link ...".format(count))
+        mylogger.info("save data from -{}- link ...".format(count))
 
         count=count+1
         obj ={'url':i["link"]}

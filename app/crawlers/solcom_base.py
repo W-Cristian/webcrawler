@@ -15,14 +15,14 @@ def Redirect_page(searchWord,browser):
 
     search_el = browser.find_element(By.ID, 'stichwort')
     search_el.send_keys(searchWord)
-    mylogger.debug(f"searchword -----{searchWord}")
+    mylogger.info(f"searchword -----{searchWord}")
 
     try:
         cookies = browser.find_element(By.CLASS_NAME, 'allow-essential-only')
         cookies.click()
         time.sleep(2)
     except:
-        mylogger.debug("no ask for cookies")
+        mylogger.info("no ask for cookies")
     search_el.submit()
     time.sleep(3)
     return browser
@@ -44,7 +44,7 @@ def Make_list (browser):
         "prospectnumber" : projectNr.text.replace("Projekt-Nr.: ","")
         }    
         propositions.append(obj)
-    mylogger.debug("taken -{}- links ...".format(len(propositions)))
+    mylogger.info("taken -{}- links ...".format(len(propositions)))
 
     return propositions
 
@@ -59,7 +59,7 @@ def Take_info (browser,data,quantity=None):
     for x in index:
 
         count=count+1
-        mylogger.debug("taking details from -{}- link: {}".format(count,data[x]["link"]))
+        mylogger.info("taking details from -{}- link: {}".format(count,data[x]["link"]))
 
         browser.get(data[x]["link"])
         time.sleep(2)

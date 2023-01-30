@@ -11,6 +11,7 @@ services:
     build: 
       context: ${CRAWLER_PATH:-.}
     command: sh -c "python3 app.py"
+    image: mycrawlercontainer.azurecr.io/crawler
     domainname: "coductCrawler"
     volumes:
     - ${CRAWLER_PATH:-.}/app:/app
@@ -18,5 +19,6 @@ services:
     - 4000:4000
     depends_on:
     - selenium
+    restart: always
     environment:
     - ACCESS_TOKEN=${ACCESS_TOKEN:-default}

@@ -16,31 +16,35 @@
   "tags": [
     {
       "name": "freelance",
-      "description": "This point returns information making requests to the page https://www.freelance.de"
+      "description": "This point returns information making requests to the page www.freelance.de"
     },      
     {
       "name": "hays",
-      "description": "This point returns information making requests to the page https://www.hays.de"
+      "description": "This point returns information making requests to the page www.hays.de"
     },      
     {
       "name": "michaelpage",
-      "description": "This point returns information making requests to the page https://www.michaelpage.de"
+      "description": "This point returns information making requests to the page www.michaelpage.de"
     },      
     {
       "name": "solcom",
-      "description": "This point returns information making requests to the page https://www.solcom.de"
+      "description": "This point returns information making requests to the page www.solcom.de"
     },
     {
       "name": "gulp",
-      "description": "This point returns information making requests to the page https://www.gulp.de"
+      "description": "This point returns information making requests to the page www.gulp.de"
     },
     {
       "name": "ferchau",
-      "description": "This point returns information making requests to the page https://www.ferchau.de"
+      "description": "This point returns information making requests to the page www.ferchau.de"
     },
     {
       "name": "austinfraser",
-      "description": "This point returns information making requests to the page https://www.austinfraser.com"
+      "description": "This point returns information making requests to the page www.austinfraser.com"
+    },
+    {
+      "name": "etengo",
+      "description": "This point returns information making requests to the page www.etengo.de"
     }
   ],
   "paths":{
@@ -532,6 +536,79 @@
               "application/json": {
                 "schema": {
                     "$ref": "#/components/schemas/asutinfraserRespose"
+                  }
+                }
+              }
+            },
+            "210": {                
+              "description": "invalid ACCESS_TOKEN",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorRespose"
+                  }
+                }
+              }
+            },
+            "211": {                
+              "description": "Missing keyword",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorRespose"
+                  }
+                }
+              }
+            },
+            "213": {                
+              "description": "Missing user or password",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/errorRespose"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Failed. Misunderstood Request."
+            },
+            "500": {
+                "description": "internal server error. page structure may change so api need and update"
+              }
+          }
+        }
+      },      
+      "/api/etengo/":{
+        "post": {
+          "tags": [
+            "etengo"
+          ],
+          "summary": "Given a KEY, the page is consulted to return the results obtained from project offers",
+          "requestBody": {
+            "description": "send information required to perform the search ",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/defaultRequest"
+                }
+              }
+            }
+          },
+          "parameters": [
+
+            {
+              "$ref": "#/components/parameters/ACCESS_TOKEN"
+            }
+          ],
+          "responses": {
+            "200": {                
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                    "$ref": "#/components/schemas/etengoRespose"
                   }
                 }
               }
@@ -1145,6 +1222,75 @@
                   }
                 },
                 "link": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "etengoRespose": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer"
+          },
+          "data": {
+            "type": "array",
+            "items": 
+            {
+              "type": "object",
+              "properties": {
+                "contact": {
+                  "type": "object",
+                  "properties": {
+                    "mail": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "description": {
+                  "type": "string"
+                },
+                "details": {
+                  "type": "object",
+                  "properties": {
+                    "Branche": {
+                      "type": "string"
+                    },
+                    "duration": {
+                      "type": "string"
+                    },
+                    "last_update": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "prospectnumber": {
+                      "type": "string"
+                    },
+                    "start": {
+                      "type": "string"
+                    },
+                    "workload": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "header": {
+                  "type": "string"
+                },
+                "link": {
+                  "type": "string"
+                },
+                "prospectnumber": {
                   "type": "string"
                 }
               }

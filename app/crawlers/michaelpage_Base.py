@@ -9,7 +9,7 @@ def Redirect_page(searchWord,browser):
     # so it is done directly in the text passed by parameter.
     searchWord = searchWord.replace('#','').replace('/','-').replace(' ','-').replace('.','').lower()
     url = f"https://www.michaelpage.de/jobs/{searchWord}?sort_by=most_recent"
-    mylogger.debug(f"searchword -----{searchWord}")
+    mylogger.info(f"searchword -----{searchWord}")
     browser.get(url)
     time.sleep(3)
 
@@ -23,7 +23,7 @@ def Make_list (browser):
     # body = browser.find_element(By.CSS_SELECTOR, "body").get_attribute("innerHTML")
     # lista = browser.find_elements(By.CLASS_NAME, "views-row")
 
-    # mylogger.debug(f" lista -{len(lista)}- ")
+    # mylogger.info(f" lista -{len(lista)}- ")
     # f = open("michaelpage_Base.html", "a")
     # f.write(body)
     # f.close()
@@ -35,7 +35,7 @@ def Make_list (browser):
         "link" : link.get_attribute('href')
         }
         propositions.append(obj)
-    mylogger.debug("taken -{}- links ...".format(len(propositions)))
+    mylogger.info("taken -{}- links ...".format(len(propositions)))
 
     return propositions
 
@@ -50,7 +50,7 @@ def Take_info (browser,data,quantity=None):
     for x in index:
 
         count=count+1
-        mylogger.debug(f"taking details from -{count}- link: {data[x]['link']}")
+        mylogger.info(f"taking details from -{count}- link: {data[x]['link']}")
 
         browser.get(data[x]["link"])
         time.sleep(2)
@@ -59,7 +59,7 @@ def Take_info (browser,data,quantity=None):
         try:
             container =  browser.find_element(By.ID, "job-description")
         except Exception as err:
-            mylogger.debug(f"EXPETED ERROR - NOT FOUND ------job-description IN -{data[x]['link']}- SKIP")
+            mylogger.info(f"EXPETED ERROR - NOT FOUND ------job-description IN -{data[x]['link']}- SKIP")
             continue
 
         last_update = container.find_element(By.CSS_SELECTOR, "p").text

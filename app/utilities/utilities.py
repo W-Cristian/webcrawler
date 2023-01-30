@@ -13,6 +13,10 @@ def Handler_request(request):
     respose_code = 290
     if "ACCESS_TOKEN" in request.headers:
         access_token = request.headers.get('ACCESS_TOKEN', type=str)
+        if Verify_credentials(access_token):
+            valid = True
+        else:
+            respose_code = 210
     else:
         respose_code = 210
 
@@ -21,9 +25,8 @@ def Handler_request(request):
     else:
         respose_code = 211
 
-    if access_token and keyword:
+    if valid and keyword:
         url_keyword = Filter_keyword(keyword)
-        valid = Verify_credentials(access_token)
         quantity=None
         if "MaxQuantity" in request.json:
             quantity=int(request.json['MaxQuantity'])

@@ -7,7 +7,7 @@ import time
 def Redirect_page(searchWord,browser):
     url = f"https://www.hays.de/jobsuche/stellenangebote-jobs/j/Contracting/3/p/1?q={searchWord}"
     time.sleep(2)
-    mylogger.debug(f"searchword -----{searchWord}")
+    mylogger.info(f"searchword -----{searchWord}")
     browser.get(url)
     time.sleep(2)
 
@@ -42,9 +42,9 @@ def Make_list (browser):
         "details" : details_with_label,
         "link" : link.get_attribute('href')
         }     
-        mylogger.debug("-- links - {} ...".format(obj["link"]))
+        mylogger.info("-- links - {} ...".format(obj["link"]))
         propositions.append(obj)
-    mylogger.debug("taken -{}- links ...".format(len(propositions)))
+    mylogger.info("taken -{}- links ...".format(len(propositions)))
     return propositions
 
 def Take_info (browser,data,quantity=None):
@@ -71,7 +71,7 @@ def Take_info (browser,data,quantity=None):
             task_array = task_array[:-2]
         except Exception as err:
             task_array = None
-            mylogger.debug("EXPETED ERROR -{err}")
+            mylogger.info("EXPETED ERROR -{err}")
 
         competences_array = ""
         try:
@@ -82,7 +82,7 @@ def Take_info (browser,data,quantity=None):
             competences_array = competences_array[:-2]
         except Exception as err:
             competences_array = None
-            mylogger.debug("EXPETED ERROR -{err}")
+            mylogger.info("EXPETED ERROR -{err}")
 
         advantages_array = ""
         try: 
@@ -93,7 +93,7 @@ def Take_info (browser,data,quantity=None):
             advantages_array = advantages_array[:-2]
         except Exception as err:
             advantages_array = None
-            mylogger.debug("EXPETED ERROR -{err}")
+            mylogger.info("EXPETED ERROR -{err}")
 
         contact_holder =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-contact-at-hays")
         details = contact_holder.find_elements(By.CSS_SELECTOR, "a")
