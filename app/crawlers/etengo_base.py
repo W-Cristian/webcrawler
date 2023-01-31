@@ -51,17 +51,16 @@ def Take_info (browser,data,quantity=None):
         description = container.find_element(By.XPATH, ".//div").text
 
         details = container.find_elements(By.XPATH, ".//div[@class='jobinfos']//dd")
+        label_details = container.find_elements(By.XPATH, ".//div[@class='jobinfos']//dt")
+        detailsobj = {}
+        index = 0
+        for detail in details:
+            if index == len(details)-1:
+                continue
+            detailsobj[label_details[index].text] = details[index].text
+            index=index+1
 
-        detailsobj = {
-            "last_update" : details[0].text,
-            "start" : details[1].text,
-            "duration" : details[2].text,
-            "Branche" : details[4].text,
-            "workload" : details[5].text,
-            "prospectnumber" : details[6].text,
-        }
-
-        contact_block =  details[7].text.split("\n")
+        contact_block =  details[-1].text.split("\n")
         contact = {
             "name" : contact_block[0],
             "mail" : contact_block[1]
@@ -71,7 +70,7 @@ def Take_info (browser,data,quantity=None):
         "header" : data[i]["header"],
         "contact" : contact,
         "description" : description,
-        "prospectnumber" : detailsobj["prospectnumber"],
+        "prospectnumber" : detailsobj["CA-Nummer"],
         "details" : detailsobj,
         "link" : data[i]["link"]
         }     
