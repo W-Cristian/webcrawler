@@ -5,11 +5,28 @@ from selenium.webdriver.common.by import By
 import time
 
 def Redirect_page(searchWord,browser):
-    url = f"https://www.hays.de/jobsuche/stellenangebote-jobs/j/Contracting/3/p/1?q={searchWord}"
-    time.sleep(2)
+    url = f"https://www.hays.de/jobsuche/stellenangebote-jobs/j/Contracting/3/p/1?q={searchWord}&e=false"
     mylogger.info(f"searchword -----{searchWord}")
     browser.get(url)
     time.sleep(2)
+
+    return browser
+
+def Change_neuest(browser):
+    try:
+        frame = browser.find_element(By.NAME, "trustarc_cm")
+        browser.switch_to.frame("trustarc_cm")
+        cookies = browser.find_element(By.XPATH, "//a[@class='required']")
+        cookies.click()
+        browser.switch_to.default_content()
+        time.sleep(4)
+        selector = browser.find_element(By.XPATH, "//ul[@id='js-combo-sort']")
+        selector.click()
+        option = selector.find_element(By.XPATH, ".//li[@data-val='createdAt']")
+        option.click()
+        time.sleep(2)
+    except Exception as err:
+        mylogger.info('ESPECTED ERROR : Not Posible to set newest')
 
     return browser
 
@@ -42,7 +59,7 @@ def Make_list (browser):
         "details" : details_with_label,
         "link" : link.get_attribute('href')
         }     
-        mylogger.info("-- links - {} ...".format(obj["link"]))
+        # mylogger.info("-- links - {} ...".format(obj["link"]))
         propositions.append(obj)
     mylogger.info("taken -{}- links ...".format(len(propositions)))
     return propositions
@@ -58,7 +75,7 @@ def Take_info (browser,data,quantity=None):
 
     for x in index:
         count=count+1
-        mylogger.debug("taking details from -{}- link: {}".format(count,data[x]["link"]))
+        mylogger.info("taking details from -{}- link: {}".format(count,data[x]["link"]))
 
         browser.get(data[x]["link"])
         time.sleep(2)
@@ -97,11 +114,11 @@ def Take_info (browser,data,quantity=None):
 
         contact_holder =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-contact-at-hays")
         details = contact_holder.find_elements(By.CSS_SELECTOR, "a")
-        telefon = ""
-        mail = ""
+        telefon = None
+        mail = None
         for i in details:
             if "mailto:" in i.get_attribute('href'):
-                if mail == "":
+                if mail == None:
                     mail = i.text
             if "callto:" in i.get_attribute('href'):
                 telefon = i.get_attribute('href').replace("callto:","")

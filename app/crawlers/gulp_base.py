@@ -8,7 +8,6 @@ import time
 def Redirect_page(searchWord,browser):
     url = f"https://www.gulp.de/gulp2/g/projekte?query={searchWord}&order=DATE_DESC"
     mylogger.info(f"searchword -----{searchWord}")
-    time.sleep(2)
     browser.get(url)
     time.sleep(2)
     
@@ -44,9 +43,9 @@ def Take_info (browser,data,quantity=None):
                    "solcom" : []}
     for x in index:
         if "agentur" in data[x]["link"]:
-            mylogger.debug("taking details from link: {}".format(data[x]["link"]))
+            mylogger.info("taking details from link: {}".format(data[x]["link"]))
             browser.get(data[x]["link"])
-            time.sleep(2)
+            time.sleep(3)
             container =  browser.find_element(By.CLASS_NAME, "element-box")
             description_container = container.find_elements(By.CLASS_NAME, "form-value")
             detailsobj = {
@@ -68,15 +67,18 @@ def Take_info (browser,data,quantity=None):
                 competences = description_container[6].text
                 
             contact_array = container.find_elements(By.XPATH, ".//section[@class='ng-star-inserted']//div[@class='ng-star-inserted']")
-            link = contact_array[2].find_element(By.CSS_SELECTOR, "a"),
-            mail = link[0].get_attribute('data-pre')+"@"+link[0].get_attribute('data-post')
+            link = container.find_element(By.XPATH, ".//a[@class='encrypted-mail']")
+            mail = link.get_attribute('data-pre')+"@"+link.get_attribute('data-post')
             contact = {
             "name" : contact_array[0].text,
-            "telephon" : contact_array[1].text.strip("Tel.:"),
+            "telephon" : None,
             "mail" : mail,
-            "firma" : contact_array[3].text,
-            "adresse" : contact_array[4].text
+            "firma" : contact_array[-2].text,
+            "adresse" : contact_array[-1].text
             }
+
+            if len(contact_array) > 5:
+                contact["telephon"] = contact_array[1].text.strip("Tel.:")
 
             obj = {
             "header" : data[x]["header"],
@@ -111,7 +113,7 @@ def TakeInfo_solcom (browser,solcom_data):
     
     propositions_solcom = []
     for x in index:
-        mylogger.info("taking details from solcom link: {}".format(solcom_data[x]["link"]))
+        mylogger.info(F"taking details from solcom link: {solcom_data[x]['link']}")
         browser.get(solcom_data[x]["link"])
         time.sleep(2)
         container =  browser.find_element(By.CLASS_NAME, "infos")

@@ -35,6 +35,7 @@ def Make_list (browser):
         "link" : link.get_attribute('href')
         }
         propositions.append(obj)
+    
     mylogger.info("taken -{}- links ...".format(len(propositions)))
 
     return propositions

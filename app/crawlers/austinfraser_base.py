@@ -9,7 +9,6 @@ import json
 
 def Redirect_page(searchWord,browser):
     url = f"https://www.austinfraser.com/de/jobangebote?query={searchWord}&selected_locations=2921044"
-    time.sleep(2)
     browser.get(url)
     time.sleep(2)
     return browser

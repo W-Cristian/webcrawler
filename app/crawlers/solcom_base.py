@@ -3,9 +3,9 @@ sys.path.append('/app/utilities')
 from logger import mylogger
 from selenium.webdriver.common.by import By
 import time
-
-
 import json
+
+
 
 def Redirect_page(searchWord,browser):
     url = "https://www.solcom.de/de/projektportal"

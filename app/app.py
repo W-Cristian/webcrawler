@@ -40,7 +40,7 @@ app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 def status():
     return "Alive"
 
-@app.route('/api/freelance', methods =["POST"])
+@app.route('/api/freelance/', methods =["POST"])
 def Crawl_post_freelance():
     handler = Handler_request(request)
     user=None
@@ -92,7 +92,8 @@ def rcrawl_hays():
         quantity = handler["quantity"]
         access_token = handler["access_token"]
         try:
-            browser = hays_Base.Redirect_page(keyword,browser)
+            browser = hays_Base.Redirect_page(url_keyword,browser)
+            browser = hays_Base.Change_neuest(browser)
             oferts = hays_Base.Make_list(browser)
             data = hays_Base.Take_info(browser,oferts,quantity)
             quantity_return = len(data)
@@ -115,6 +116,7 @@ def rcrawl_hays():
         resp = make_response(invalid_ACCESS_TOKEN, error_code)
         return resp
 
+#this page regect autonomos machines and azure is register in it but work local
 @app.route('/api/michaelpage/', methods =["POST"])
 def crawl_michaelpage():
     handler = Handler_request(request)
@@ -158,7 +160,7 @@ def crawl_solcom():
         quantity = handler["quantity"]
         access_token = handler["access_token"]
         try:
-            browser = solcom_base.Redirect_page(url_keyword,browser)
+            browser = solcom_base.Redirect_page(keyword,browser)
             oferts = solcom_base.Make_list(browser)
             data = solcom_base.Take_info(browser,oferts,quantity)
             quantity_return = len(data)
@@ -194,7 +196,7 @@ def crawl_gulp():
         quantity = handler["quantity"]
         access_token = handler["access_token"]
         try:
-            browser = gulp_base.Redirect_page(keyword,browser)
+            browser = gulp_base.Redirect_page(url_keyword,browser)
             oferts = gulp_base.Make_list(browser)
             data = gulp_base.Take_info(browser,oferts)
             if not exclusive_gulp:

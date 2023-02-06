@@ -21,7 +21,10 @@ def Handler_request(request):
         respose_code = 210
 
     if "keyword" in request.json:
-        keyword = request.json["keyword"]
+        if request.json["keyword"] != "":
+            keyword = request.json["keyword"]
+        else:
+        respose_code = 211
     else:
         respose_code = 211
 
@@ -52,3 +55,5 @@ def Filter_keyword(keyword):
     url_keyword = url_keyword.replace("/","%2F")
     url_keyword = url_keyword.replace(" ","+")
     return url_keyword
+
+# browser.save_screenshot('screenshot.png')

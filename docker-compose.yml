@@ -1,11 +1,11 @@
 version: '2'
 
 services:
-  selenium:
-    image: selenium/standalone-firefox
-    ports:
-    - 4444:4444
-    restart: always
+  # selenium:
+  #   image: selenium/standalone-firefox
+  #   ports:
+  #   - 4444:4444
+  #   restart: always
 
   app:
     build: 
@@ -17,8 +17,8 @@ services:
     - ${CRAWLER_PATH:-.}/app:/app
     ports:
     - 4000:4000
-    depends_on:
-    - selenium
+    # depends_on:
+    # - selenium
     restart: always
     environment:
     - ACCESS_TOKEN=${ACCESS_TOKEN:-default}
