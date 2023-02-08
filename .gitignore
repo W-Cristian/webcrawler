@@ -4,6 +4,7 @@
 .env
 # testing
 app/bot.py
+compose-azure.yml
 
 # production
 **/__pycache__

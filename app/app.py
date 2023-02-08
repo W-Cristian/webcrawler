@@ -52,15 +52,15 @@ def Crawl_post_freelance():
         handler["respose_code"] = 213
 
     if handler["valid"] and user and password:
-        browser = Generate_browser()
+        freelance_browser = Generate_browser()
         keyword = handler["raw_keyword"]
         url_keyword = handler["url_keyword"]
         quantity = handler["quantity"]
         access_token = handler["access_token"]    
 
         try:
-            log_browser = freelance_base.LogIn(user, password,browser)
-            data = freelance_base.Take_detail_data(log_browser, url_keyword,quantity)
+            freelance_browser = freelance_base.LogIn(user, password,freelance_browser)
+            data = freelance_base.Take_detail_data(freelance_browser, url_keyword,quantity)
             quantity_return = len(data)
             return jsonify({'user':user,
                 'keyword':keyword,
@@ -70,8 +70,9 @@ def Crawl_post_freelance():
             mylogger.error(f"Unexpected ERROR Taking Info {err}")
             raise err
         finally:
-            browser.quit()
+            freelance_browser.quit()
             mylogger.info(f"Closing Browser")
+            freelance_browser = None
 
     else:
         error_code = handler["respose_code"]
@@ -86,16 +87,16 @@ def Crawl_post_freelance():
 def rcrawl_hays():
     handler = Handler_request(request)
     if handler["valid"]:
-        browser = Generate_browser()
+        hays_browser = Generate_browser()
         keyword = handler["raw_keyword"]
         url_keyword = handler["url_keyword"]
         quantity = handler["quantity"]
         access_token = handler["access_token"]
         try:
-            browser = hays_Base.Redirect_page(url_keyword,browser)
-            browser = hays_Base.Change_neuest(browser)
-            oferts = hays_Base.Make_list(browser)
-            data = hays_Base.Take_info(browser,oferts,quantity)
+            hays_browser = hays_Base.Redirect_page(url_keyword,hays_browser)
+            # hays_browser = hays_Base.Change_neuest(hays_browser)
+            oferts = hays_Base.Make_list(hays_browser)
+            data = hays_Base.Take_info(hays_browser,oferts,quantity)
             quantity_return = len(data)
             return jsonify({'keyword' : keyword,
                 'quantity' : quantity_return,
@@ -104,8 +105,9 @@ def rcrawl_hays():
             mylogger.error(f"Unexpected ERROR Taking Info {err}")
             raise err
         finally:
-            browser.quit()
+            hays_browser.quit()
             mylogger.info(f"Closing Browser")
+            hays_browser = None
 
     else:
         error_code = handler["respose_code"]
@@ -121,15 +123,15 @@ def rcrawl_hays():
 def crawl_michaelpage():
     handler = Handler_request(request)
     if handler["valid"]:
-        browser = Generate_browser()
+        michaelpage_browser = Generate_browser()
         keyword = handler["raw_keyword"]
         url_keyword = handler["url_keyword"]
         quantity = handler["quantity"]
         access_token = handler["access_token"]
         try:
-            browser = michaelpage_Base.Redirect_page(keyword,browser)
-            oferts = michaelpage_Base.Make_list(browser)
-            data = michaelpage_Base.Take_info(browser,oferts,quantity)
+            michaelpage_browser = michaelpage_Base.Redirect_page(keyword,michaelpage_browser)
+            oferts = michaelpage_Base.Make_list(michaelpage_browser)
+            data = michaelpage_Base.Take_info(michaelpage_browser,oferts,quantity)
             quantity_return = len(data)
             return jsonify({'keyword' : keyword,
                 'quantity' : quantity_return,
@@ -138,8 +140,9 @@ def crawl_michaelpage():
             mylogger.error(f"Unexpected ERROR Taking Info {err}")
             raise err
         finally:
-            browser.quit()
+            michaelpage_browser.quit()
             mylogger.info(f"Closing Browser")
+            michaelpage_browser = None
 
     else:
         error_code = handler["respose_code"]
@@ -154,15 +157,15 @@ def crawl_michaelpage():
 def crawl_solcom():
     handler = Handler_request(request)
     if handler["valid"]:
-        browser = Generate_browser()
+        solcom_browser = Generate_browser()
         keyword = handler["raw_keyword"]
         url_keyword = handler["url_keyword"]
         quantity = handler["quantity"]
         access_token = handler["access_token"]
         try:
-            browser = solcom_base.Redirect_page(keyword,browser)
-            oferts = solcom_base.Make_list(browser)
-            data = solcom_base.Take_info(browser,oferts,quantity)
+            solcom_browser = solcom_base.Redirect_page(keyword,solcom_browser)
+            oferts = solcom_base.Make_list(solcom_browser)
+            data = solcom_base.Take_info(solcom_browser,oferts,quantity)
             quantity_return = len(data)
             return jsonify({'keyword' : keyword,
                 'quantity' : quantity_return,
@@ -172,8 +175,9 @@ def crawl_solcom():
             mylogger.error(f"Unexpected ERROR Taking Info {err}")
             raise err
         finally:
-            browser.quit()
+            solcom_browser.quit()
             mylogger.info(f"Closing Browser")
+            solcom_browser = None
 
     else:
         error_code = handler["respose_code"]
@@ -190,17 +194,17 @@ def crawl_gulp():
     exclusive_gulp = args.get("exclusive_gulp", type=bool)
     handler = Handler_request(request)
     if handler["valid"]:
-        browser = Generate_browser()
+        gulp_browser = Generate_browser()
         keyword = handler["raw_keyword"]
         url_keyword = handler["url_keyword"]
         quantity = handler["quantity"]
         access_token = handler["access_token"]
         try:
-            browser = gulp_base.Redirect_page(url_keyword,browser)
-            oferts = gulp_base.Make_list(browser)
-            data = gulp_base.Take_info(browser,oferts)
+            gulp_browser = gulp_base.Redirect_page(url_keyword,gulp_browser)
+            oferts = gulp_base.Make_list(gulp_browser)
+            data = gulp_base.Take_info(gulp_browser,oferts)
             if not exclusive_gulp:
-                propositions_solcom = gulp_base.TakeInfo_solcom(browser,data["solcom"])
+                propositions_solcom = gulp_base.TakeInfo_solcom(gulp_browser,data["solcom"])
                 data["solcom"] = propositions_solcom
             else:
                 data["solcom"] = None
@@ -211,8 +215,9 @@ def crawl_gulp():
             mylogger.error(f"Unexpected ERROR Taking Info {err}")
             raise err
         finally:
-            browser.quit()
+            gulp_browser.quit()
             mylogger.info(f"Closing Browser")
+            gulp_browser = None
 
     else:
         error_code = handler["respose_code"]
@@ -228,7 +233,7 @@ def crawl_ferchau():
     quantity = 20
     handler = Handler_request(request)
     if handler["valid"]:
-        browser = Generate_browser()
+        # ferchau_blowser = Generate_browser()
         keyword = handler["raw_keyword"]
         url_keyword = handler["url_keyword"]
         if handler["quantity"]:
@@ -245,9 +250,9 @@ def crawl_ferchau():
         except Exception as err:
             mylogger.error(f"Unexpected ERROR Taking Info {err}")
             raise err
-        finally:
-            browser.quit()
-            mylogger.info(f"Closing Browser")
+        # finally:
+        #     browser.quit()
+        #     mylogger.info(f"Closing Browser")
 
     else:
         error_code = handler["respose_code"]
@@ -262,15 +267,15 @@ def crawl_ferchau():
 def crawl_austinfraser():
     handler = Handler_request(request)
     if handler["valid"]:
-        browser = Generate_browser()
+        austinfraser_browser = Generate_browser()
         keyword = handler["raw_keyword"]
         url_keyword = handler["url_keyword"]
         quantity = handler["quantity"]
         access_token = handler["access_token"]
         try:
-            browser = austinfraser_base.Redirect_page(url_keyword,browser)
-            oferts = austinfraser_base.Make_list(browser)
-            data = austinfraser_base.Take_info(browser,oferts,quantity)
+            austinfraser_browser = austinfraser_base.Redirect_page(url_keyword,austinfraser_browser)
+            oferts = austinfraser_base.Make_list(austinfraser_browser)
+            data = austinfraser_base.Take_info(austinfraser_browser,oferts,quantity)
             quantity_return = len(data)
             return jsonify({'keyword' : keyword,
                 'quantity' : quantity_return,
@@ -280,8 +285,9 @@ def crawl_austinfraser():
             mylogger.error(f"Unexpected ERROR Taking Info {err}")
             raise err
         finally:
-            browser.quit()
+            austinfraser_browser.quit()
             mylogger.info(f"Closing Browser")
+            austinfraser_browser = None
 
     else:
         error_code = handler["respose_code"]
@@ -296,14 +302,14 @@ def crawl_austinfraser():
 def crawl_etengo():
     handler = Handler_request(request)
     if handler["valid"]:
-        browser = Generate_browser()
+        etengo_browser = Generate_browser()
         keyword = handler["raw_keyword"]
         url_keyword = handler["url_keyword"]
         quantity = handler["quantity"]
         access_token = handler["access_token"]
         try:
             oferts = etengo_base.Make_list(url_keyword)
-            data = etengo_base.Take_info(browser,oferts,quantity)
+            data = etengo_base.Take_info(etengo_browser,oferts,quantity)
             quantity_return = len(data)
             return jsonify({'keyword' : keyword,
                 'quantity' : quantity_return,
@@ -313,8 +319,9 @@ def crawl_etengo():
             mylogger.error(f"Unexpected ERROR Taking Info {err}")
             raise err
         finally:
-            browser.quit()
+            etengo_browser.quit()
             mylogger.info(f"Closing Browser")
+            etengo_browser = None
 
     else:
         error_code = handler["respose_code"]
