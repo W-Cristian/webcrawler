@@ -4,14 +4,8 @@ services:
   selenium:
     image: selenium/standalone-firefox:109.0-geckodriver-0.32
     container_name: standalone-firefox
-    # shm_size: 1gb
     environment:
-    # - SE_NODE_MAX_INSTANCES=10
     - SE_NODE_MAX_SESSIONS=8
-    # - NODE_MAX_CONCURRENT_SESSIONS=7
-    # - SE_NODE_SESSION_TIMEOUT=60000
-    # - GRID_MAX_SESSION=5
-    # - SE_DRAIN_AFTER_SESSION_COUNT=3
     ports:
     - 4444:4444
     # restart: always
@@ -20,17 +14,16 @@ services:
     build: 
       context: ${CRAWLER_PATH:-.}
     command: sh -c "python3 app.py"
-    image: myappcrawler.azurecr.io/crawler-v2
-    # image: myappcrawler
+    image: myappcrawler.azurecr.io/crawler
     domainname: "coductCrawlerCompose"
     container_name: crawler-api
     volumes:
     - ${CRAWLER_PATH:-.}/app:/app
     ports:
     - 4000:4000
-    # - 8000:4000
     depends_on:
     - selenium
     # restart: always
     environment:
     - ACCESS_TOKEN=${ACCESS_TOKEN:-default}
+    - SELENIUM_HUB=${SELENIUM_HUB:-http://selenium:4444}

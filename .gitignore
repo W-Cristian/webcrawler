@@ -5,6 +5,7 @@
 # testing
 app/bot.py
 compose-azure.yml
+credentials.json
 
 # production
 **/__pycache__

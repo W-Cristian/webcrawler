@@ -63,6 +63,9 @@
                 {
                   "name": "ACCESS_TOKEN",
                   "value": "accesstoken_7m5fxsdpe"
+                },                {
+                  "name": "SELENIUM_HUB",
+                  "value": "http://selenium:4444"
                 }
               ],
               "resources": {
