@@ -9,17 +9,25 @@ from logger import mylogger
 class seleniumConection:
     def __init__(self):
         # mylogger.info(options)
-
-        # self._browser = webdriver.Remote(command_executor='http://selenium:4444/wd/hub',
-        # desired_capabilities=DesiredCapabilities.FIREFOX) 
+        # options = Options() 
+        # options.to_capabilities().timeouts
+        self._browser = webdriver.Remote(command_executor='http://selenium:4444/wd/hub',
+            desired_capabilities=DesiredCapabilities.FIREFOX)
 
         # self._browser = webdriver.Remote(command_executor='https://coduct-crawler-selenium.braveforest-44e154a2.westeurope.azurecontainerapps.io/wd/hub',
-        # desired_capabilities=options)
-
-        self._browser = webdriver.Remote(command_executor='https://coduct-crawler-selenium.braveforest-44e154a2.westeurope.azurecontainerapps.io/wd/hub',
-          desired_capabilities=DesiredCapabilities.FIREFOX)
-        self._browser.SET_TIMEOUTS(60000)
-        mylogger.info(self._browser)
+        # desired_capabilities=DesiredCapabilities.FIREFOX)
+        # self._browser = webdriver.Remote(command_executor='https://coduct-crawler-selenium.braveforest-44e154a2.westeurope.azurecontainerapps.io/wd/hub',
+        #   desired_capabilities=DesiredCapabilities.FIREFOX)
+        # self._browser = webdriver.Remote(command_executor='https://selenium-app-web.azurewebsites.net//wd/hub',
+        #     desired_capabilities=DesiredCapabilities.FIREFOX)
+        # driver2 = webdriver.Remote(command_executor=the_known_url)  
+        # self._browser.caps.timeouts.pageLoad
+        # self._browser.set_page_load_timeout(60)
+        # mylogger.info(f"timeouts - {self._browser.caps.timeouts}")
+        
+        # mylogger.info(f"browser - {self._browser.__dict__}")
+        # mylogger.info(f"options - {options.__dict__}")
+        # self._browser.SET_TIMEOUTS(60000)
 
 
     def browser(self):

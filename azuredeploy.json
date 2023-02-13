@@ -1,0 +1,134 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "containerGroups_apipythonselenium_name": {
+      "defaultValue": "apipythonselenium",
+      "type": "String"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[parameters('containerGroups_apipythonselenium_name')]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "docker-compose-application": "docker-compose-application"
+      },
+      "properties": {
+        "sku": "Standard",
+        "containers": [
+          {
+            "name": "standalone-firefox",
+            "properties": {
+              "image": "selenium/standalone-firefox:109.0-geckodriver-0.32",
+              "ports": [
+                {
+                  "protocol": "TCP",
+                  "port": 4444
+                }
+              ],
+              "environmentVariables": [
+                {
+                  "name": "SE_NODE_MAX_SESSIONS",
+                  "value": "2"
+                }
+              ],
+              "resources": {
+                "requests": {
+                  "memoryInGB": 1,
+                  "cpu": 1
+                },
+                "limits": {
+                  "memoryInGB": 2,
+                  "cpu": 2
+                }
+              }
+            }
+          },
+          {
+            "name": "crawler-api",
+            "properties": {
+              "image": "myappcrawler.azurecr.io/crawler-v2",
+              "command": ["sh", "-c", "python3 app.py"],
+              "ports": [
+                {
+                  "protocol": "TCP",
+                  "port": 4000
+                }
+              ],
+              "environmentVariables": [
+                {
+                  "name": "ACCESS_TOKEN",
+                  "value": "accesstoken_7m5fxsdpe"
+                }
+              ],
+              "resources": {
+                "requests": {
+                  "memoryInGB": 1,
+                  "cpu": 1
+                },
+                "limits": {
+                  "memoryInGB": 1,
+                  "cpu": 1
+                }
+              }
+            }
+          },
+          {
+            "name": "aci--dns--sidecar",
+            "properties": {
+              "image": "docker/aci-hostnames-sidecar:1.0",
+              "command": [
+                "/hosts",
+                "selenium",
+                "standalone-firefox",
+                "coductcrawler",
+                "crawler-api"
+              ],
+              "ports": [],
+              "environmentVariables": [],
+              "resources": {
+                "requests": {
+                  "memoryInGB": 0.1,
+                  "cpu": 0.01
+                }
+              }
+            }
+          }
+        ],
+        "imageRegistryCredentials": [
+          {
+            "password": "vVSeYcC4ks8OzJWyuvzn+zf/qGri04KTpB0KBt7gy/+ACRB1hE7w",
+            "server": "myappcrawler.azurecr.io",
+            "username": "myappcrawler"
+          }
+        ],
+        "restartPolicy": "Always",
+        "ipAddress": {
+          "ports": [
+            {
+              "protocol": "TCP",
+              "port": 4444
+            },
+            {
+              "protocol": "TCP",
+              "port": 4000
+            }
+          ],
+          "type": "Public",
+          "dnsNameLabel": "coductCrawlerCompose"
+        },
+        "osType": "Linux"
+      }
+    }
+  ],
+  "outputs": {
+    "containerIPv4Address": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containerGroups_apipythonselenium_name'))).ipAddress.ip]"
+    }
+  }
+}

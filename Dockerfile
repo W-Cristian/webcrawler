@@ -9,5 +9,6 @@ WORKDIR /app
 
 COPY ./requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
-# EXPOSE 4000
+# ENV LISTEN_PORT=443
+# EXPOSE 443
 CMD [ "python", "./app.py" ]

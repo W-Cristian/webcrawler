@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request, make_response
+# from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
 from  utilities.utilities import Verify_credentials,Handler_request,RESPOSE_CODE_MESSAGE
 # from utilities.logger import mylogger
@@ -17,6 +18,7 @@ import logging
 mylogger = logging.getLogger("myLogger")
 
 app = Flask(__name__)
+# CORS(app)
 
 SWAGGER_URL = '/api/docs'  # URL for exposing Swagger UI (without trailing '/')
 API_URL = '/static/swagger.json'  # Our API url (can of course be a local resource)
@@ -38,7 +40,15 @@ app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
 @app.route('/')
 def status():
-    return "Alive"
+    return "Alive 2"
+
+@app.route('/api/austinfraser')
+def crawl_austinfraser2():
+    return "Austine alive "
+
+@app.route('/test')
+def test():
+    return "test"
 
 @app.route('/api/freelance/', methods =["POST"])
 def Crawl_post_freelance():
@@ -262,6 +272,8 @@ def crawl_ferchau():
                 'status': error_m })
         resp = make_response(invalid_ACCESS_TOKEN, error_code)
         return resp
+
+
 
 @app.route('/api/austinfraser/', methods =["POST"])
 def crawl_austinfraser():
