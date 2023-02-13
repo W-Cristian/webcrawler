@@ -51,7 +51,7 @@
           {
             "name": "crawler-api",
             "properties": {
-              "image": "myappcrawler.azurecr.io/crawler-v2",
+              "image": "myappcrawler.azurecr.io/crawler",
               "command": ["sh", "-c", "python3 app.py"],
               "ports": [
                 {

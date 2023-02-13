@@ -23,30 +23,10 @@ jobs:
     - name: Build and push image
       run: |
         az acr login -n $REGISTRY_NAME -u ${{ secrets.ACR_USERNAME }} -p ${{ secrets.ACR_PASSWORD }}
-        az acr build --file Dockerfile --registry $REGISTRY_NAME --image crawler:${{ github.sha }} .
+        az acr build --file Dockerfile --registry $REGISTRY_NAME -t crawler:${{ github.sha }} -t crawler:latest .
         # docker login azure --client-id ${{ secrets.AZURE_CLIENT_ID }} --tenant-id ${{ secrets.AZURE_TENANT_ID }} --client-secret ${{ secrets.AZURE_CLIENT_SECRET }} 
 
-        ### In case you want to launch container instance with last version of image
-        # - name: 'Az CLI login'
-        #   uses: azure/login@v1
-        #   with:
-        #       client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        #       tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        #       subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      
-        # - name: 'Run Azure CLI commands'
-        #   run: |
-        #     az deployment group create --resource-group $RESOURCE_GROUP --template-file azuredeploy.json
-     
-        # - name: 'Build and push image'
-        #   uses: azure/docker-login@v1
-        #   with:
-        #     login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-        #     username: ${{ secrets.REGISTRY_USERNAME }}
-        #     password: ${{ secrets.REGISTRY_PASSWORD }}
-        # - run: |
-        #     docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/crawler:${{ github.sha }}
-        #     docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/crawler:${{ github.sha }}
-
-        # - name: 'Run Azure CLI commands'
-        #   run: |
+    ### In case you want to launch container instance with last version of image
+    - name: 'Run Azure CLI commands'
+      run: |
+        az deployment group create --resource-group $RESOURCE_GROUP --template-file azuredeploy.json
