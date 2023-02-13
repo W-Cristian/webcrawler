@@ -9,6 +9,9 @@ jobs:
         - name: 'Checkout GitHub Action'
           uses: actions/checkout@main
           
+        - name: Create annotation for build error
+          run: echo "credentiall correct ${{ secrets.AZURE_CREDENTIALS }}"
+        
         - name: 'Login via Azure CLI'
           uses: azure/login@v1
           with:
