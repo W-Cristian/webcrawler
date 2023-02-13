@@ -11,20 +11,20 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-      environment: development
 
-      steps:
-      - name: 'Checkout GitHub Action'
-        uses: actions/checkout@main
+    steps:
+    - name: 'Checkout GitHub Action'
+      uses: actions/checkout@main
 
-      - name: Log into Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-        run: |
-# docker login azure --client-id ${{ secrets.AZURE_CLIENT_ID }} --tenant-id ${{ secrets.AZURE_TENANT_ID }} --client-secret ${{ secrets.AZURE_CLIENT_SECRET }} 
-          az acr login -n $REGISTRY_NAME -u ${{ secrets.ACR_USERNAME }} -p ${{ secrets.ACR_PASSWORD }}
-          az acr build --file Dockerfile --registry $REGISTRY_NAME --image crawler:${{ github.sha }} .
+    - name: Log into Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Build and push image
+      run: |
+        az acr login -n $REGISTRY_NAME -u ${{ secrets.ACR_USERNAME }} -p ${{ secrets.ACR_PASSWORD }}
+        az acr build --file Dockerfile --registry $REGISTRY_NAME --image crawler:${{ github.sha }} .
+        # docker login azure --client-id ${{ secrets.AZURE_CLIENT_ID }} --tenant-id ${{ secrets.AZURE_TENANT_ID }} --client-secret ${{ secrets.AZURE_CLIENT_SECRET }} 
 
         ### In case you want to launch container instance with last version of image
         # - name: 'Az CLI login'
