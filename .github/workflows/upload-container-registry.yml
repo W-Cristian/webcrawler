@@ -1,13 +1,25 @@
 on: [push]
+name: ACI
 
-name: AzureLoginSample
+env:
+  artifact_name: jobscrape-backend-artifact
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Log in with Azure
-        uses: azure/login@v1
-        with:
-          creds: '${{ secrets.AZURE_CREDENTIALS }}'
-          enable-AzPSSession: true
+    build:
+        runs-on: ubuntu-latest
+        environment: development
+        steps:
+        
+        - name: Install Docker Compose CLI 
+          run: curl --max-time 5 --retry 5 --retry-delay 0 -L https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sh
+
+        - name: 'Checkout GitHub Action'
+          uses: actions/checkout@main
+
+        - name: Build Images 
+          run: docker compose build
+
+        - name: Log into Azure
+          run: |
+            docker login azure --client-id ${{ secrets.AZURE_CLIENT_ID }} --client-secret ${{ secrets.AZURE_CLIENT_SECRET }} --tenant-id ${{ secrets.AZURE_TENANT_ID }}
+            az acr login -n myappcrawler -u ${{ secrets.ACR_USERNAME }} -p ${{ secrets.ACR_PASSWORD }} 
