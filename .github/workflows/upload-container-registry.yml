@@ -1,32 +1,30 @@
-name: update container registry
-env:
-    RESOURCE_GROUP: PowerApps
-    REGISTRY_NAME: myappcrawler
-permissions:
-  contents: read
-on:
+on:   
   push:
-    branches: [ "main" ]
-  workflow_dispatch:
-  
+    branches:    
+      - main
+name: update container registry
+
+env:
+  RESOURCE_GROUP: PowerApps
+  REGISTRY_NAME: myappcrawler
   
 jobs:
   build:
     runs-on: ubuntu-latest
-        runs-on: ubuntu-latest
-        # environment: development
+      environment: development
 
-        steps:
-          - uses: actions/checkout@v3
-          
-          - name: Set up Docker Buildx
-            uses: azure/login@v1
-            with:
-                creds: ${{ secrets.AZURE_CREDENTIALS }}
-            run: |
-            # docker login azure --client-id ${{ secrets.AZURE_CLIENT_ID }} --tenant-id ${{ secrets.AZURE_TENANT_ID }} --client-secret ${{ secrets.AZURE_CLIENT_SECRET }} 
-            az acr login -n $REGISTRY_NAME -u ${{ secrets.ACR_USERNAME }} -p ${{ secrets.ACR_PASSWORD }}
-            az acr build --file Dockerfile --registry $REGISTRY_NAME --image crawler:${{ github.sha }} .
+      steps:
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@main
+
+      - name: Log into Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+        run: |
+# docker login azure --client-id ${{ secrets.AZURE_CLIENT_ID }} --tenant-id ${{ secrets.AZURE_TENANT_ID }} --client-secret ${{ secrets.AZURE_CLIENT_SECRET }} 
+          az acr login -n $REGISTRY_NAME -u ${{ secrets.ACR_USERNAME }} -p ${{ secrets.ACR_PASSWORD }}
+          az acr build --file Dockerfile --registry $REGISTRY_NAME --image crawler:${{ github.sha }} .
 
         ### In case you want to launch container instance with last version of image
         # - name: 'Az CLI login'
