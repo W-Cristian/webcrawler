@@ -24,9 +24,9 @@ jobs:
       run: |
         az acr login -n $REGISTRY_NAME -u ${{ secrets.ACR_USERNAME }} -p ${{ secrets.ACR_PASSWORD }}
         az acr build --file Dockerfile --registry $REGISTRY_NAME -t crawler:${{ github.sha }} -t crawler:latest .
-        # docker login azure --client-id ${{ secrets.AZURE_CLIENT_ID }} --tenant-id ${{ secrets.AZURE_TENANT_ID }} --client-secret ${{ secrets.AZURE_CLIENT_SECRET }} 
 
     ### In case you want to launch container instance with last version of image
+    # https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-github-actions?tabs=userlevel
     - name: 'Run Azure CLI commands'
       run: |
         az deployment group create --resource-group $RESOURCE_GROUP --template-file azuredeploy.json

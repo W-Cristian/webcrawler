@@ -2,6 +2,8 @@ import sys
 sys.path.append('/app/utilities')
 from logger import mylogger
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
 
 def Redirect_page(searchWord,browser):
@@ -10,23 +12,26 @@ def Redirect_page(searchWord,browser):
     searchWord = searchWord.replace('#','').replace('/','-').replace(' ','-').replace('.','').lower()
     url = f"https://www.michaelpage.de/jobs/{searchWord}?sort_by=most_recent"
     mylogger.info(f"searchword -----{searchWord}")
-    browser.get(url)
-    time.sleep(3)
-
+    try:
+        browser.get(url)
+    except Exception as e:
+        mylogger.error('HP error ')
+        mylogger.error(e)
+        raise e
     return browser
 
 def Make_list (browser):
+    try:
+        element = WebDriverWait(browser, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//li[@class='views-row']"))
+            )
+    except Exception as e:
+        mylogger.error(e)
+        raise e
     divBox = browser.find_elements(By.XPATH, "//li[@class='views-row']")
     index = range(0, len(divBox))
     propositions = []
-
-    # body = browser.find_element(By.CSS_SELECTOR, "body").get_attribute("innerHTML")
-    # lista = browser.find_elements(By.CLASS_NAME, "views-row")
-
-    # mylogger.info(f" lista -{len(lista)}- ")
-    # f = open("michaelpage_Base.html", "a")
-    # f.write(body)
-    # f.close()
+    
     for i in index:
     
         link = divBox[i].find_element(By.CSS_SELECTOR, "a")
@@ -53,8 +58,14 @@ def Take_info (browser,data,quantity=None):
         count=count+1
         mylogger.info(f"taking details from -{count}- link: {data[x]['link']}")
 
-        browser.get(data[x]["link"])
-        time.sleep(2)
+        try:
+            browser.get(data[x]["link"])
+            element = WebDriverWait(browser, 10).until(
+                EC.presence_of_element_located((By.CLASS_NAME, "job-title"))
+                )
+        except Exception as e:
+            mylogger.error(e)
+            raise e
 
         header =  browser.find_element(By.CLASS_NAME, "job-title").text
         try:

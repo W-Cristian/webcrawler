@@ -2,18 +2,31 @@ import sys
 sys.path.append('/app/utilities')
 from logger import mylogger
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
 
 
 def Redirect_page(searchWord,browser):
     url = f"https://www.gulp.de/gulp2/g/projekte?query={searchWord}&order=DATE_DESC"
     mylogger.info(f"searchword -----{searchWord}")
-    browser.get(url)
-    time.sleep(2)
-    
+    try:
+        browser.get(url)
+    except Exception as e:
+        mylogger.error('HP error ')
+        mylogger.error(e)
+        raise e
     return browser
 
 def Make_list (browser):
+    try:
+        element = WebDriverWait(browser, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//ul[@class='ng-star-inserted']"))
+            )
+    except Exception as e:
+        mylogger.error(e)
+        raise e
+
     divBox = browser.find_elements(By.XPATH, "//ul[@class='ng-star-inserted']//li")
     index = range(0, len(divBox))
     propositions = []
@@ -44,8 +57,14 @@ def Take_info (browser,data,quantity=None):
     for x in index:
         if "agentur" in data[x]["link"]:
             mylogger.info("taking details from link: {}".format(data[x]["link"]))
-            browser.get(data[x]["link"])
-            time.sleep(3)
+            try:
+                browser.get(data[x]["link"])
+                element = WebDriverWait(browser, 10).until(
+                    EC.presence_of_element_located((By.CLASS_NAME, "element-box"))
+                    )
+            except Exception as e:
+                mylogger.error(e)
+                raise e
             container =  browser.find_element(By.CLASS_NAME, "element-box")
             description_container = container.find_elements(By.CLASS_NAME, "form-value")
             detailsobj = {
@@ -115,7 +134,14 @@ def TakeInfo_solcom (browser,solcom_data):
     for x in index:
         mylogger.info(F"taking details from solcom link: {solcom_data[x]['link']}")
         browser.get(solcom_data[x]["link"])
-        time.sleep(2)
+        try:
+            element = WebDriverWait(browser, 10).until(
+                EC.presence_of_element_located((By.CLASS_NAME, "infos"))
+                )
+        except Exception as e:
+            mylogger.error(e)
+            raise e
+
         container =  browser.find_element(By.CLASS_NAME, "infos")
         container_array = container.find_elements(By.CSS_SELECTOR, "div")
         text = ""

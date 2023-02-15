@@ -5,7 +5,8 @@ services:
     image: selenium/standalone-firefox:109.0-geckodriver-0.32
     container_name: standalone-firefox
     environment:
-    - SE_NODE_MAX_SESSIONS=8
+    - SE_NODE_MAX_SESSIONS=2
+    - SE_NODE_SESSION_TIMEOUT=10
     ports:
     - 4444:4444
     # restart: always
@@ -26,4 +27,5 @@ services:
     # restart: always
     environment:
     - ACCESS_TOKEN=${ACCESS_TOKEN:-default}
+    - WAITING_TIME=${WAITING_TIME:-5}
     - SELENIUM_HUB=${SELENIUM_HUB:-http://selenium:4444}

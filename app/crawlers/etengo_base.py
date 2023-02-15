@@ -2,6 +2,8 @@ import sys
 sys.path.append('/app/utilities')
 from logger import mylogger
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
 
 import requests
@@ -45,8 +47,16 @@ def Take_info (browser,data,quantity=None):
 
         count=count+1
         mylogger.info(f"taking details from -{count}- link: {data[i]['link']}")
-        browser.get(data[i]["link"])
-        time.sleep(2)
+        try:
+            browser.get(data[i]["link"])
+            element = WebDriverWait(browser, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//article[@class='node clearfix node-rt-box']"))
+            )
+        except Exception as e:
+            mylogger.error('HP error ')
+            mylogger.error(e)
+            raise e
+
         container = browser.find_element(By.XPATH, "//article[@class='node clearfix node-rt-box']")
         description = container.find_element(By.XPATH, ".//div").text
 

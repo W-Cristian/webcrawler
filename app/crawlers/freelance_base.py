@@ -2,13 +2,17 @@ import sys
 sys.path.append('/app/utilities')
 from logger import mylogger
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
 
 def Redirect_page(searchWord,browser):
     url = "https://www.freelance.de/"
-    time.sleep(5)
     browser.get(url)
     time.sleep(2)
+    cookies_el = browser.find_element(By.ID, 'CybotCookiebotDialogBodyLevelButtonLevelOptinAllowallSelection')
+    cookies_el.click()
+    time.sleep(1)
 
     search_el = browser.find_element(By.ID, 'search-text')
     search_el.send_keys(searchWord)
@@ -20,6 +24,14 @@ def Redirect_page(searchWord,browser):
     return browser
 
 def Take_info (browser,quantity=None):
+    try:
+        element = WebDriverWait(browser, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[@class='list-item-main']"))
+            )
+    except Exception as e:
+        mylogger.error(e)
+        raise e
+
     divBox = browser.find_elements(By.XPATH, "//div[@class='list-item-main']")
     div_count = len(divBox)
     if quantity is not None:
@@ -37,7 +49,6 @@ def Take_info (browser,quantity=None):
         details = divBox[i].find_element(By.CLASS_NAME , 'icon-list')
         details_array = []
         detail = details.find_elements(By.CSS_SELECTOR, "li")
-        detail
         for detail in details.find_elements(By.CSS_SELECTOR, "li"):
             details_array.append(detail.text)
 
@@ -55,10 +66,13 @@ def Take_info (browser,quantity=None):
 def LogIn(user,password,browser):
 
     url = "https://www.freelance.de/login.php"
-    time.sleep(5)
 
     browser.get(url)
     time.sleep(2)
+
+    cookies_el = browser.find_element(By.ID, 'CybotCookiebotDialogBodyLevelButtonLevelOptinAllowallSelection')
+    cookies_el.click()
+    time.sleep(1)
 
     user_el = browser.find_element(By.ID, 'username')
     user_el.send_keys(user)
@@ -68,7 +82,7 @@ def LogIn(user,password,browser):
     pass_el.send_keys(password)
     time.sleep(2)
 
-    submit_btn_el = browser.find_element(By.XPATH, "//input[@name='login'][@type='submit']")
+    submit_btn_el = browser.find_element(By.ID, "login")
     submit_btn_el.click()
     time.sleep(2)
     mylogger.info("LogIn succesfully with credentials...")
@@ -79,11 +93,16 @@ def Insert_search(log_browser,searchWord):
     project_url = f"https://www.freelance.de/search/project.php?__search_sort_by=2&__search_freetext={searchWord}&__search_sort_by_remote=2"
     mylogger.info(f"searchword -----{searchWord}")
     log_browser.get(project_url)
-    time.sleep(2)
 
 def Take_header(log_browser,url):
-    log_browser.get(url)
-    time.sleep(2)
+    try:
+        log_browser.get(url)
+        element = WebDriverWait(log_browser, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[@class='panel project-detail online read']"))
+            )
+    except Exception as e:
+        mylogger.error(e)
+        raise e
     
     container = log_browser.find_element(By.XPATH, "//div[@class='panel project-detail online read']")
     title = container.find_element(By.XPATH,"//h1[@class='margin-bottom-xs']").text
@@ -105,7 +124,6 @@ def Take_project_description(log_browser):
     return text
 
 def Take_contact(log_browser):
-    time.sleep(1)
     kontac_btns = log_browser.find_elements(By.CSS_SELECTOR, "button")
     mail = ""
     company = ""
@@ -143,13 +161,12 @@ def Take_contact(log_browser):
 def Logout(log_browser):
     url = "https://www.freelance.de/logout.php"
     log_browser.get(url)
-    time.sleep(1)
     mylogger.info("Logout freelance.de...")
 
 
 def Take_detail_data(log_browser, searchWord,quantity=None):
     Insert_search(log_browser,searchWord)
-    list_url = Take_info (log_browser,quantity)
+    list_url = Take_info(log_browser,quantity)
     detaildata = []
     count = 1
     for i in list_url:

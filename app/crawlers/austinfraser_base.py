@@ -2,24 +2,37 @@ import sys
 sys.path.append('/app/utilities')
 from logger import mylogger
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
-
-
 import json
 
 def Redirect_page(searchWord,browser):
     url = f"https://www.austinfraser.com/de/jobangebote?query={searchWord}&selected_locations=2921044"
-    browser.get(url)
-    time.sleep(2)
+    try:
+        browser.get(url)
+    except Exception as e:
+        mylogger.error('HP error ')
+        mylogger.error(e)
+        raise e
     return browser
 
 def Make_list (browser):
+    try:
+        element = WebDriverWait(browser, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//li[@class='job-result-item']"))
+            )
+    except Exception as e:
+        mylogger.error(e)
+        raise e
+
     divBox = browser.find_elements(By.XPATH, "//li[@class='job-result-item']")
     index = range(0, len(divBox))
     propositions = []
+    time.sleep(1)
 
     for i in index:
-    
+
         link = divBox[i].find_element(By.CSS_SELECTOR, "a")
         
         obj = {
@@ -40,7 +53,13 @@ def Take_contact(browser,contact_url):
         }
 
     browser.get(contact_url)
-    time.sleep(2)
+    try:
+        element = WebDriverWait(browser, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//ul[@class='format clearfix']"))
+            )
+    except Exception as e:
+        mylogger.error(e)
+        raise e
 
     contact_block =  browser.find_elements(By.XPATH, "//ul[@class='format clearfix']//li")
     full_contact = {
@@ -64,17 +83,30 @@ def Take_info (browser,data,quantity=None):
         count=count+1
         mylogger.info(f"taking details from -{count}- link: {data[x]['link']}")
         browser.get(data[x]["link"])
-        time.sleep(2)
+        try:
+            element = WebDriverWait(browser, 10).until(
+                EC.presence_of_element_located((By.ID, "extra-info"))
+                )
+        except Exception as e:
+            mylogger.error(e)
+            raise e
         container =  browser.find_element(By.ID, "extra-info")
-        details = container.find_elements(By.XPATH, ".//li//span")
+        details = container.find_elements(By.XPATH, ".//li")
+        detailsobj = {}
+        for detail in details:
+            value = detail.find_element(By.XPATH, ".//span").text.strip()
+            detailsobj[detail.text.rstrip(value).strip('\n')]=value
 
-        detailsobj = {
-            "Salary" : details[0].text,
-            "Sector" : details[1].text,
-            "prospectnumber" : details[2].text,
-            "Published" : details[4].text,
-        }
-        contact_name = details[3].text
+        # detailsobj = {
+        #     "Salary" : details[0].text,
+        #     "Sector" : details[1].text,
+        #     "prospectnumber" : details[2].text,
+        #     "Published" : details[-1].text,
+        # }
+
+
+        mylogger.info(f"detailsobj - {detailsobj}")
+        
         description =  browser.find_element(By.XPATH, "//div[@class='wrapper body']").text
         
         contact_block =  browser.find_element(By.ID, "job-consultant-block")
@@ -85,13 +117,18 @@ def Take_info (browser,data,quantity=None):
             mylogger.info(f"EXPECTED ERROR - NOT FOUND .job-consultant-block.a")
             contact = Take_contact(browser,None)
 
-        contact["name"] = contact_name
-        
+        contact["name"] = ""
+        if "Kontakt" in detailsobj:
+            contact["name"] = detailsobj["Kontakt"]
+        prospectnumber = ""
+        if "Job-Referenz" in detailsobj:
+            prospectnumber = detailsobj["Job-Referenz"]
+
         obj = {
         "header" : data[x]["header"],
         "contact" : contact,
         "description" : description,
-        "prospectnumber" : detailsobj["prospectnumber"],
+        "prospectnumber" : prospectnumber,
         "details" : detailsobj,
         "link" : data[x]["link"]
         }     

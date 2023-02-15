@@ -2,6 +2,9 @@ from flask import Flask, jsonify, request, make_response
 # from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
 from  utilities.utilities import Verify_credentials,Handler_request,RESPOSE_CODE_MESSAGE
+from selenium.common import exceptions
+import time
+
 # from utilities.logger import mylogger
 
 import crawlers.freelance_base as freelance_base
@@ -12,7 +15,7 @@ import crawlers.gulp_base as gulp_base
 import crawlers.ferchau_base as ferchau_base
 import crawlers.austinfraser_base as austinfraser_base
 import crawlers.etengo_base as etengo_base
-from crawlers.general_resources import Generate_browser
+from crawlers.general_resources import Generate_browser ,Recover_session
 import logging
 
 mylogger = logging.getLogger("myLogger")
@@ -76,6 +79,17 @@ def Crawl_post_freelance():
                 'keyword':keyword,
                 'quantity':quantity_return,
                 'data':data})
+
+        except exceptions.InvalidSessionIdException as e:
+            mylogger.error(f"InvalidSessionIdException -  {e}")
+            # time.sleep(3)
+            # mylogger.info(f"try to reconect - {freelance_browser.session_id}")
+            # browser = Recover_session(freelance_browser.session_id)
+            # browser.get("https://google.com")
+            # browser.save_screenshot(f'screenshot-{browser.session_id}.png')
+            raise e
+
+
         except Exception as err:
             mylogger.error(f"Unexpected ERROR Taking Info {err}")
             raise err
@@ -102,6 +116,7 @@ def rcrawl_hays():
         url_keyword = handler["url_keyword"]
         quantity = handler["quantity"]
         access_token = handler["access_token"]
+
         try:
             hays_browser = hays_Base.Redirect_page(url_keyword,hays_browser)
             # hays_browser = hays_Base.Change_neuest(hays_browser)
@@ -111,6 +126,16 @@ def rcrawl_hays():
             return jsonify({'keyword' : keyword,
                 'quantity' : quantity_return,
                 'data':data})
+        except exceptions.InvalidSessionIdException as e:
+            mylogger.error(f"InvalidSessionIdException -  {e}")
+            # time.sleep(3)
+            # mylogger.info(f"try to reconect - {hays_browser.session_id}")
+            # browser = Recover_session(hays_browser.session_id)
+            # browser.get("https://google.com")
+            # browser.save_screenshot(f'screenshot-{browser.session_id}.png')
+            raise e
+
+
         except Exception as err:
             mylogger.error(f"Unexpected ERROR Taking Info {err}")
             raise err
@@ -146,9 +171,20 @@ def crawl_michaelpage():
             return jsonify({'keyword' : keyword,
                 'quantity' : quantity_return,
                 'data':data})
+
+        except exceptions.InvalidSessionIdException as e:
+            mylogger.error(f"InvalidSessionIdException -  {e}")
+            # time.sleep(3)
+            # mylogger.info(f"try to reconect - {michaelpage_browser.session_id}")
+            # browser = Recover_session(michaelpage_browser.session_id)
+            # browser.get("https://google.com")
+            # browser.save_screenshot(f'screenshot-{browser.session_id}.png')
+            raise e
+
         except Exception as err:
             mylogger.error(f"Unexpected ERROR Taking Info {err}")
             raise err
+
         finally:
             michaelpage_browser.quit()
             mylogger.info(f"Closing Browser")
@@ -172,6 +208,7 @@ def crawl_solcom():
         url_keyword = handler["url_keyword"]
         quantity = handler["quantity"]
         access_token = handler["access_token"]
+
         try:
             solcom_browser = solcom_base.Redirect_page(keyword,solcom_browser)
             oferts = solcom_base.Make_list(solcom_browser)
@@ -180,6 +217,14 @@ def crawl_solcom():
             return jsonify({'keyword' : keyword,
                 'quantity' : quantity_return,
                 'data':data})
+        except exceptions.InvalidSessionIdException as e:
+            mylogger.error(f"InvalidSessionIdException -  {e}")
+            # time.sleep(3)
+            # mylogger.info(f"try to reconect - {solcom_browser.session_id}")
+            # browser = Recover_session(solcom_browser.session_id)
+            # browser.get("https://google.com")
+            # browser.save_screenshot(f'screenshot-{browser.session_id}.png')
+            raise e
 
         except Exception as err:
             mylogger.error(f"Unexpected ERROR Taking Info {err}")
@@ -220,7 +265,18 @@ def crawl_gulp():
                 data["solcom"] = None
 
             return jsonify({'keyword' : keyword,
-                'data':data})
+                'data':data})        
+
+        except exceptions.InvalidSessionIdException as e:
+            mylogger.error(f"InvalidSessionIdException -  {e}")
+            # time.sleep(3)
+            # mylogger.info(f"try to reconect - {gulp_browser.session_id}")
+            # browser = Recover_session(gulp_browser.session_id)
+            # browser.get("https://google.com")
+            # browser.save_screenshot(f'screenshot-{browser.session_id}.png')
+            raise e
+
+
         except Exception as err:
             mylogger.error(f"Unexpected ERROR Taking Info {err}")
             raise err
@@ -293,6 +349,15 @@ def crawl_austinfraser():
                 'quantity' : quantity_return,
                 'data':data})
 
+        except exceptions.InvalidSessionIdException as e:
+            mylogger.error(f"InvalidSessionIdException -  {e}")
+            # time.sleep(3)
+            # mylogger.info(f"try to reconect - {austinfraser_browser.session_id}")
+            # browser = Recover_session(austinfraser_browser.session_id)
+            # browser.get("https://google.com")
+            # browser.save_screenshot(f'screenshot-{browser.session_id}.png')
+            raise e
+
         except Exception as err:
             mylogger.error(f"Unexpected ERROR Taking Info {err}")
             raise err
@@ -326,6 +391,15 @@ def crawl_etengo():
             return jsonify({'keyword' : keyword,
                 'quantity' : quantity_return,
                 'data':data})
+        except exceptions.InvalidSessionIdException as e:
+            mylogger.error(f"InvalidSessionIdException -  {e}")
+            # time.sleep(3)
+            # mylogger.info(f"try to reconect - {etengo_browser.session_id}")
+            # browser = Recover_session(etengo_browser.session_id)
+            # browser.get("https://google.com")
+            # browser.save_screenshot(f'screenshot-{browser.session_id}.png')
+            raise e
+
 
         except Exception as err:
             mylogger.error(f"Unexpected ERROR Taking Info {err}")

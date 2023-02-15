@@ -2,16 +2,22 @@ import sys
 sys.path.append('/app/utilities')
 from logger import mylogger
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
 import json
 
-
-
 def Redirect_page(searchWord,browser):
     url = "https://www.solcom.de/de/projektportal"
-    time.sleep(2)
-    browser.get(url)
-    time.sleep(2)
+    try:
+        browser.get(url)
+        element = WebDriverWait(browser, 10).until(
+            EC.presence_of_element_located((By.ID, 'stichwort'))
+            )
+    except Exception as e:
+        mylogger.error('HP error ')
+        mylogger.error(e)
+        raise e
 
     search_el = browser.find_element(By.ID, 'stichwort')
     search_el.send_keys(searchWord)
@@ -24,11 +30,18 @@ def Redirect_page(searchWord,browser):
     except:
         mylogger.info("no ask for cookies")
     search_el.submit()
-    time.sleep(3)
     return browser
 
 
 def Make_list (browser):
+    try:
+        element = WebDriverWait(browser, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[@class='contenance-solcom-portal-project-item project-item']"))
+            )
+    except Exception as e:
+        mylogger.error(e)
+        raise e
+
     divBox = browser.find_elements(By.XPATH, "//div[@class='contenance-solcom-portal-project-item project-item']")
     index = range(0, len(divBox))
     propositions = []
@@ -61,8 +74,15 @@ def Take_info (browser,data,quantity=None):
         count=count+1
         mylogger.info("taking details from -{}- link: {}".format(count,data[x]["link"]))
 
-        browser.get(data[x]["link"])
-        time.sleep(2)
+        try:
+            browser.get(data[x]["link"])
+            element = WebDriverWait(browser, 10).until(
+                EC.presence_of_element_located((By.CLASS_NAME, "projectdetail-container"))
+                )
+        except Exception as e:
+            mylogger.error('HP error ')
+            mylogger.error(e)
+            raise e
         container =  browser.find_element(By.CLASS_NAME, "projectdetail-container")
         description_container = container.find_element(By.XPATH, ".//div[@class='neos-nodetypes-text projekt-desc']")
         lists = description_container.find_elements(By.CSS_SELECTOR, "ul")
@@ -103,14 +123,3 @@ def Take_info (browser,data,quantity=None):
         propositions.append(obj)
 
     return propositions
-
-# class Solcom:
-
-#     def __init__(self, header, description,prospectnumber,details,link):
-#         self.header = header
-#         self.description = description
-#         self.prospectnumber = prospectnumber
-#         self.details = details
-#         self.link = link
-#     def Json(self):
-#         return json.dumps(self.__dict__)

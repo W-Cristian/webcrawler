@@ -2,14 +2,19 @@ import sys
 sys.path.append('/app/utilities')
 from logger import mylogger
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
 
 def Redirect_page(searchWord,browser):
     url = f"https://www.hays.de/jobsuche/stellenangebote-jobs/j/Contracting/3/p/1?q={searchWord}&e=false"
     mylogger.info(f"searchword -----{searchWord}")
-    browser.get(url)
-    time.sleep(2)
-
+    try:
+        browser.get(url)
+    except Exception as e:
+        mylogger.error('HP error ')
+        mylogger.error(e)
+        raise e
     return browser
 
 def Change_neuest(browser):
@@ -26,15 +31,22 @@ def Change_neuest(browser):
         option.click()
         time.sleep(2)
     except Exception as err:
-        mylogger.info('ESPECTED ERROR : Not Posible to set newest')
+        mylogger.info('ExPECTED ERROR : Not Posible to set newest')
 
     return browser
 
 def Make_list (browser):
+    try:
+        element = WebDriverWait(browser, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[@class='search__result']"))
+            )
+    except Exception as e:
+        mylogger.error(e)
+        raise e
+
     divBox = browser.find_elements(By.XPATH, "//div[@class='search__result']")
     index = range(0, len(divBox))
     propositions = []
-    print (len(divBox))
     for i in index:
         
         link = divBox[i].find_element(By.CSS_SELECTOR, "a")
@@ -59,7 +71,6 @@ def Make_list (browser):
         "details" : details_with_label,
         "link" : link.get_attribute('href')
         }     
-        # mylogger.info("-- links - {} ...".format(obj["link"]))
         propositions.append(obj)
     mylogger.info("taken -{}- links ...".format(len(propositions)))
     return propositions
@@ -77,8 +88,15 @@ def Take_info (browser,data,quantity=None):
         count=count+1
         mylogger.info("taking details from -{}- link: {}".format(count,data[x]["link"]))
 
-        browser.get(data[x]["link"])
-        time.sleep(2)
+        try:
+            browser.get(data[x]["link"])
+            element = WebDriverWait(browser, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//div[@class='hays__job__details']"))
+                )
+        except Exception as e:
+            mylogger.error(e)
+            raise e
+
         task_array = ""
         try:
             tasks =  browser.find_element(By.CLASS_NAME, "hays__job__detail__your-task")
@@ -112,23 +130,27 @@ def Take_info (browser,data,quantity=None):
             advantages_array = None
             mylogger.info("EXPETED ERROR -{err}")
 
-        contact_holder =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-contact-at-hays")
-        details = contact_holder.find_elements(By.CSS_SELECTOR, "a")
-        telefon = None
-        mail = None
-        for i in details:
-            if "mailto:" in i.get_attribute('href'):
-                if mail == None:
-                    mail = i.text
-            if "callto:" in i.get_attribute('href'):
-                telefon = i.get_attribute('href').replace("callto:","")
-        contact = {}
-        contact["mail"] = mail
-        contact["telefon"] = telefon
-        name_el =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-contact-at-hays__item")
-        if "Mein Ansprechpartner" in name_el.text:
-            contact["name"] = name_el.text.replace("Mein Ansprechpartner\n","")        
-                
+        try: 
+            contact_holder =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-contact-at-hays")
+            details = contact_holder.find_elements(By.CSS_SELECTOR, "a")
+            telefon = None
+            mail = None
+            for i in details:
+                if "mailto:" in i.get_attribute('href'):
+                    if mail == None:
+                        mail = i.text
+                if "callto:" in i.get_attribute('href'):
+                    telefon = i.get_attribute('href').replace("callto:","")
+            contact = {}
+            contact["mail"] = mail
+            contact["telefon"] = telefon
+            name_el =  browser.find_element(By.CLASS_NAME, "hays__job__details__your-contact-at-hays__item")
+            if "Mein Ansprechpartner" in name_el.text:
+                contact["name"] = name_el.text.replace("Mein Ansprechpartner\n","")        
+        except Exception as err:
+            contact = None
+            mylogger.info("EXPETED ERROR -{err}")       
+
         description = {}
         description["tasks"] = task_array
         description["advantages"] = advantages_array
