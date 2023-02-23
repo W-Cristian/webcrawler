@@ -136,7 +136,7 @@
   "outputs": {
     "containerIPv4Address": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containerGroups_apipythonselenium_name'))).ipAddress.ip]"
+      "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containerGroups_apipythonselenium_name'))).ipAddress.fqdn]"
     }
   }
 }
