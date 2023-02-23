@@ -25,7 +25,7 @@ jobs:
     - name: Build and push image
       run: |
         az acr login -n $REGISTRY_NAME -u ${{ secrets.ACR_USERNAME }} -p ${{ secrets.ACR_PASSWORD }}
-        az acr build --file Dockerfile --registry $REGISTRY_NAME -t crawler:${{ github.sha }} -t crawler:latest .
+        az acr build --file Dockerfile --registry $REGISTRY_NAME -t crawler-dev:${{ github.sha }} -t crawler-dev:latest .
 
     ### In case you want to launch container instance with last version of image
     # https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-github-actions?tabs=userlevel
