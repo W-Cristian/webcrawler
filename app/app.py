@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, make_response
 # from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
-from  utilities.utilities import Verify_credentials,Handler_request,RESPOSE_CODE_MESSAGE
+from  utilities.utilities import Verify_credentials,Handler_request,Generate_error_message
 from selenium.common import exceptions
 import time
 
@@ -62,7 +62,7 @@ def Crawl_post_freelance():
         user = request.json["user"]
         password = request.json["pass"]
     else:
-        handler["respose_code"] = 213
+        handler["respose_code"] = 460
 
     if handler["valid"] and user and password:
         freelance_browser = Generate_browser()
@@ -99,12 +99,9 @@ def Crawl_post_freelance():
             freelance_browser = None
 
     else:
-        error_code = handler["respose_code"]
-        error_m = RESPOSE_CODE_MESSAGE[error_code]
-        invalid_ACCESS_TOKEN = jsonify({'keyword' : handler["raw_keyword"],
-                'ACCESS_TOKEN' : handler["access_token"],
-                'status': error_m })
-        resp = make_response(invalid_ACCESS_TOKEN, error_code)
+        error_message = Generate_error_message(handler["respose_code"], handler["raw_keyword"], handler["access_token"])
+        error_message_json = jsonify(error_message[1])
+        resp = make_response(error_message_json, error_message[0])
         return resp
     
 @app.route('/api/hays/', methods =["POST"])
@@ -145,12 +142,9 @@ def rcrawl_hays():
             hays_browser = None
 
     else:
-        error_code = handler["respose_code"]
-        error_m = RESPOSE_CODE_MESSAGE[error_code]
-        invalid_ACCESS_TOKEN = jsonify({'keyword' : handler["raw_keyword"],
-                'ACCESS_TOKEN' : handler["access_token"],
-                'status': error_m })
-        resp = make_response(invalid_ACCESS_TOKEN, error_code)
+        error_message = Generate_error_message(handler["respose_code"], handler["raw_keyword"], handler["access_token"])
+        error_message_json = jsonify(error_message[1])
+        resp = make_response(error_message_json, error_message[0])
         return resp
 
 #this page regect autonomos machines and azure is register in it but work local
@@ -191,12 +185,9 @@ def crawl_michaelpage():
             michaelpage_browser = None
 
     else:
-        error_code = handler["respose_code"]
-        error_m = RESPOSE_CODE_MESSAGE[error_code]
-        invalid_ACCESS_TOKEN = jsonify({'keyword' : handler["raw_keyword"],
-                'ACCESS_TOKEN' : handler["access_token"],
-                'status': error_m })
-        resp = make_response(invalid_ACCESS_TOKEN, error_code)
+        error_message = Generate_error_message(handler["respose_code"], handler["raw_keyword"], handler["access_token"])
+        error_message_json = jsonify(error_message[1])
+        resp = make_response(error_message_json, error_message[0])
         return resp
 
 @app.route('/api/solcom/', methods =["POST"])
@@ -235,12 +226,9 @@ def crawl_solcom():
             solcom_browser = None
 
     else:
-        error_code = handler["respose_code"]
-        error_m = RESPOSE_CODE_MESSAGE[error_code]
-        invalid_ACCESS_TOKEN = jsonify({'keyword' : handler["raw_keyword"],
-                'ACCESS_TOKEN' : handler["access_token"],
-                'status': error_m })
-        resp = make_response(invalid_ACCESS_TOKEN, error_code)
+        error_message = Generate_error_message(handler["respose_code"], handler["raw_keyword"], handler["access_token"])
+        error_message_json = jsonify(error_message[1])
+        resp = make_response(error_message_json, error_message[0])
         return resp
 
 @app.route('/api/gulp/', methods =["POST"])
@@ -286,12 +274,9 @@ def crawl_gulp():
             gulp_browser = None
 
     else:
-        error_code = handler["respose_code"]
-        error_m = RESPOSE_CODE_MESSAGE[error_code]
-        invalid_ACCESS_TOKEN = jsonify({'keyword' : handler["raw_keyword"],
-                'ACCESS_TOKEN' : handler["access_token"],
-                'status': error_m })
-        resp = make_response(invalid_ACCESS_TOKEN, error_code)
+        error_message = Generate_error_message(handler["respose_code"], handler["raw_keyword"], handler["access_token"])
+        error_message_json = jsonify(error_message[1])
+        resp = make_response(error_message_json, error_message[0])
         return resp
 
 @app.route('/api/ferchau/', methods =["POST"])
@@ -321,15 +306,10 @@ def crawl_ferchau():
         #     mylogger.info(f"Closing Browser")
 
     else:
-        error_code = handler["respose_code"]
-        error_m = RESPOSE_CODE_MESSAGE[error_code]
-        invalid_ACCESS_TOKEN = jsonify({'keyword' : handler["raw_keyword"],
-                'ACCESS_TOKEN' : handler["access_token"],
-                'status': error_m })
-        resp = make_response(invalid_ACCESS_TOKEN, error_code)
+        error_message = Generate_error_message(handler["respose_code"], handler["raw_keyword"], handler["access_token"])
+        error_message_json = jsonify(error_message[1])
+        resp = make_response(error_message_json, error_message[0])
         return resp
-
-
 
 @app.route('/api/austinfraser/', methods =["POST"])
 def crawl_austinfraser():
@@ -367,12 +347,9 @@ def crawl_austinfraser():
             austinfraser_browser = None
 
     else:
-        error_code = handler["respose_code"]
-        error_m = RESPOSE_CODE_MESSAGE[error_code]
-        invalid_ACCESS_TOKEN = jsonify({'keyword' : handler["raw_keyword"],
-                'ACCESS_TOKEN' : handler["access_token"],
-                'status': error_m })
-        resp = make_response(invalid_ACCESS_TOKEN, error_code)
+        error_message = Generate_error_message(handler["respose_code"], handler["raw_keyword"], handler["access_token"])
+        error_message_json = jsonify(error_message[1])
+        resp = make_response(error_message_json, error_message[0])
         return resp
 
 @app.route('/api/etengo/', methods =["POST"])
@@ -410,12 +387,9 @@ def crawl_etengo():
             etengo_browser = None
 
     else:
-        error_code = handler["respose_code"]
-        error_m = RESPOSE_CODE_MESSAGE[error_code]
-        invalid_ACCESS_TOKEN = jsonify({'keyword' : handler["raw_keyword"],
-                'ACCESS_TOKEN' : handler["access_token"],
-                'status': error_m })
-        resp = make_response(invalid_ACCESS_TOKEN, error_code)
+        error_message = Generate_error_message(handler["respose_code"], handler["raw_keyword"], handler["access_token"])
+        error_message_json = jsonify(error_message[1])
+        resp = make_response(error_message_json, error_message[0])
         return resp
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@
 *.png
 *.BAT
 .env
+*.not
 # testing
 app/bot.py
 compose-azure.yml

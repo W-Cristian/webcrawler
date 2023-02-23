@@ -96,16 +96,6 @@ def Take_info (browser,data,quantity=None):
         for detail in details:
             value = detail.find_element(By.XPATH, ".//span").text.strip()
             detailsobj[detail.text.rstrip(value).strip('\n')]=value
-
-        # detailsobj = {
-        #     "Salary" : details[0].text,
-        #     "Sector" : details[1].text,
-        #     "prospectnumber" : details[2].text,
-        #     "Published" : details[-1].text,
-        # }
-
-
-        mylogger.info(f"detailsobj - {detailsobj}")
         
         description =  browser.find_element(By.XPATH, "//div[@class='wrapper body']").text
         

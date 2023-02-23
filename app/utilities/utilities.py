@@ -10,23 +10,23 @@ def Handler_request(request):
     url_keyword = None
     quantity=None
     access_token = None
-    respose_code = 290
+    respose_code = 500
     if "ACCESS_TOKEN" in request.headers:
         access_token = request.headers.get('ACCESS_TOKEN', type=str)
         if Verify_credentials(access_token):
             valid = True
         else:
-            respose_code = 210
+            respose_code = 403
     else:
-        respose_code = 210
+        respose_code = 403
 
     if "keyword" in request.json:
         if request.json["keyword"] != "":
             keyword = request.json["keyword"]
         else:
-            respose_code = 211
+            respose_code = 400
     else:
-        respose_code = 211
+        respose_code = 400
 
     if valid and keyword:
         url_keyword = Filter_keyword(keyword)
@@ -44,10 +44,23 @@ def Handler_request(request):
     "respose_code" : respose_code
     }
 
-RESPOSE_CODE_MESSAGE = {210:"ERROR invalid ACCESS_TOKEN",
-                        211:"ERROR Missing keyword",
-                        213:"ERROR Missing user or password",
-                        290:"Unknow error"}
+RESPOSE_CODE_MESSAGE = {403:"Forbidden - invalid ACCESS_TOKEN",
+                        400:"Bad Request - Missing keyword",
+                        460:"Bad Request - Missing user or password",
+                        500:"Server Unknow Error"}
+
+def Generate_error_message(RESPOSE_CODE, keyword, ACCESS_TOKEN):
+    if RESPOSE_CODE > 459 and RESPOSE_CODE < 470:
+        respose_code = 400
+    else:
+        respose_code = RESPOSE_CODE
+    
+    return (
+                respose_code,
+                {'keyword' : keyword,
+                'ACCESS_TOKEN' : ACCESS_TOKEN,
+                'status': RESPOSE_CODE_MESSAGE[RESPOSE_CODE] }
+            )
 
 def Filter_keyword(keyword):
     url_keyword = keyword

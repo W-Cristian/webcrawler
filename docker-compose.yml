@@ -2,13 +2,17 @@ version: '2'
 
 services:
   selenium:
+    # image: selenium/standalone-chrome:110.0
     image: selenium/standalone-firefox:109.0-geckodriver-0.32
     container_name: standalone-firefox
     environment:
     - SE_NODE_MAX_SESSIONS=2
-    - SE_NODE_SESSION_TIMEOUT=10
+    - SE_NODE_SESSION_TIMEOUT=40
     ports:
     - 4444:4444
+    # shm_size: '1gb'
+    # volumes:
+    # - /dev/shm:/dev/shm
     # restart: always
 
   coductcrawler:

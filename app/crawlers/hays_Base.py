@@ -4,6 +4,8 @@ from logger import mylogger
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common import exceptions
+
 import time
 
 def Redirect_page(searchWord,browser):
@@ -93,6 +95,11 @@ def Take_info (browser,data,quantity=None):
             element = WebDriverWait(browser, 10).until(
                 EC.presence_of_element_located((By.XPATH, "//div[@class='hays__job__details']"))
                 )
+                
+        except exceptions.TimeoutException as e:
+            mylogger.warning('exceptions.TimeoutException')
+            continue
+            
         except Exception as e:
             mylogger.error(e)
             raise e
