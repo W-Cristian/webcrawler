@@ -7,7 +7,7 @@ name: update container registry
 env:
   RESOURCE_GROUP: PowerApps
   REGISTRY_NAME: myappcrawler
-  DEPLOY_TEMPLATE: false
+  # DEPLOY_TEMPLATE: false
   
 jobs:
   build:
@@ -29,7 +29,7 @@ jobs:
 
     ### In case you want to launch container instance with last version of image
     # https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-github-actions?tabs=userlevel
-    if: $DEPLOY_TEMPLATE
-    - name: 'Run Azure CLI commands'
-      run: |
-        az deployment group create --resource-group $RESOURCE_GROUP --template-file azuredeploy.json
+    # if: $DEPLOY_TEMPLATE
+    # - name: 'Run Azure CLI commands'
+    #   run: |
+    #     az deployment group create --resource-group $RESOURCE_GROUP --template-file azuredeploy.json
