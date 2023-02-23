@@ -29,7 +29,8 @@ jobs:
 
     ### In case you want to launch container instance with last version of image
     # https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-github-actions?tabs=userlevel
-    if: ${{ env.DEPLOY_TEMPLATE == 'yes' }}
+
     - name: 'Run Azure CLI commands'
+      if: ${{ env.DEPLOY_TEMPLATE == 'yes' }}
       run: |
         az deployment group create --resource-group $RESOURCE_GROUP --template-file azuredeploy.json
